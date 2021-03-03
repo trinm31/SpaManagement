@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UserSecretsId>aspnet-SpaManagement-5E377B77-C596-4B5C-8242-37B8BF7F87E9</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.10" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Areas\Authenticated\Controllers" />
+      <Folder Include="Areas\Authenticated\Views" />
+      <Folder Include="Areas\Unauthenticated\Views" />
+      <Folder Include="DataAccess\DbInitialize" />
+      <Folder Include="DataAccess\Repository\IRepository" />
+      <Folder Include="Utility" />
+      <Folder Include="ViewComponents" />
+      <Folder Include="ViewModels" />
+      <Folder Include="wwwroot\Images" />
+    </ItemGroup>
+
+</Project>
