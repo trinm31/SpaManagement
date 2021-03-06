@@ -9,6 +9,7 @@ using SpaManagement.Models;
 
 namespace SpaManagement.Controllers
 {
+    [Area("Unauthenticated")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -19,11 +20,6 @@ namespace SpaManagement.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
