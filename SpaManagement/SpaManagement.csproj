@@ -31,9 +31,7 @@
       <Folder Include="Areas\Authenticated\Controllers\API" />
       <Folder Include="Areas\Authenticated\Views" />
       <Folder Include="Areas\Unauthenticated\Views" />
-      <Folder Include="ViewComponents" />
       <Folder Include="ViewModels" />
-      <Folder Include="wwwroot\Images" />
     </ItemGroup>
 
 </Project>
