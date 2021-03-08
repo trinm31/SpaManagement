@@ -21,7 +21,7 @@ namespace SpaManagement.Utility
         private Task Execute(string sendGridKey,string subject, string message, string email)
         {
             var client = new SendGridClient(sendGridKey);
-            var from = new EmailAddress("trinmgcd19833@fpt.edu.vn", "FPT EDU");
+            var from = new EmailAddress("trinmgcd19833@fpt.edu.vn", "Spa management");
             var to = new EmailAddress(email, "End User");
             var msg = MailHelper.CreateSingleEmail(from, to, subject, "",message);
             return client.SendEmailAsync(msg);

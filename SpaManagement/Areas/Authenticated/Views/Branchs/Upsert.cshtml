@@ -1,0 +1,91 @@
+@model SpaManagement.Models.Branch
+
+@{
+    var title = "Create Category";
+    Layout = "_Layout";
+}
+<form method="post">
+    <div class="row p-3 border bg-white">
+        @if (Model.Id != 0)
+        {
+            <input type="hidden" asp-for="Id">
+            title = "Edit Category";
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <partial name="_StatusMessage" model="@ViewData["Message"]" />
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Name"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Address"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Address" class="form-control">
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="PhoneNumber"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="PhoneNumber" class="form-control">
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Email"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Email" class="form-control">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ContactVia"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ContactVia" class="form-control">
+                    <span asp-validation-for="ContactVia" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="BranchCode"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="BranchCode" class="form-control">
+                    <span asp-validation-for="BranchCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButton" model="@Model.Id"/>
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButton"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

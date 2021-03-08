@@ -139,9 +139,10 @@ namespace SpaManagement.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
-                    if (User.IsInRole(SD.Role_Staff))
+                    if (Input.Role == SD.Role_Staff)
                     {
+                        await _userManager.AddToRoleAsync(staffUser, staffUser.Role);
+                        
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(staffUser);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                         var callbackUrl = Url.Page(
@@ -149,12 +150,14 @@ namespace SpaManagement.Areas.Identity.Pages.Account
                             pageHandler: null,
                             values: new { area = "Identity", userId = staffUser.Id, code = code, returnUrl = returnUrl },
                             protocol: Request.Scheme);
-
+                    
                         await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     }
                     else
                     {
+                        await _userManager.AddToRoleAsync(applicationUser, applicationUser.Role);
+                        
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                         var callbackUrl = Url.Page(
@@ -162,28 +165,19 @@ namespace SpaManagement.Areas.Identity.Pages.Account
                             pageHandler: null,
                             values: new { area = "Identity", userId = applicationUser.Id, code = code, returnUrl = returnUrl },
                             protocol: Request.Scheme);
-
+                    
                         await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     }
-                    
-
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
-                        if (User.IsInRole(SD.Role_Staff))
-                        {
-                            await _signInManager.SignInAsync(staffUser, isPersistent: false);
-                        }
-                        else
-                        {
-                            await _signInManager.SignInAsync(applicationUser, isPersistent: false);
-                        }
-                        
-                        return LocalRedirect(returnUrl);
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        //return LocalRedirect(returnUrl);
+                        return RedirectToAction("Index", "Users", new {Area = "Authenticated"});
                     }
                 }
                 foreach (var error in result.Errors)
@@ -191,7 +185,20 @@ namespace SpaManagement.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
+            IEnumerable<Branch> branchList = await _unitOfWork.Branch.GetAllAsync();
+            Input = new InputModel()
+            {
+                RoleList = _roleManager.Roles.Select(x=> x.Name).Select(i=> new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }),
+                BranchList = branchList.Select(i=> new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
             // If we got this far, something failed, redisplay form
             return Page();
         }
