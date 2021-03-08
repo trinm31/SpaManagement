@@ -37,7 +37,6 @@ namespace SpaManagement.DataAccess.DbInitialize
 
             if (_db.Roles.Any(r => r.Name == SD.Role_Admin)) return;
             if (_db.Roles.Any(r => r.Name == SD.Role_Staff)) return;
-            if (_db.Roles.Any(r => r.Name == SD.Role_Customer)) return;
 
             _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole(SD.Role_Staff)).GetAwaiter().GetResult();
@@ -65,17 +64,6 @@ namespace SpaManagement.DataAccess.DbInitialize
             StaffUser userStaff = _db.StaffUsers.Where(u => u.Email == "Staff@gmail.com").FirstOrDefault();
 
             _userManager.AddToRoleAsync(userStaff, SD.Role_Staff).GetAwaiter().GetResult();
-            _userManager.CreateAsync(new Customer
-            {
-                UserName = "Customer@gmail.com",
-                Email = "Customer@gmail.com",
-                EmailConfirmed = true,
-                Name = "Customer"
-            },"Customer123@").GetAwaiter().GetResult() ;
-
-            Customer customer = _db.Customers.Where(u => u.Email == "Customer@gmail.com").FirstOrDefault();
-
-            _userManager.AddToRoleAsync(customer, SD.Role_Customer).GetAwaiter().GetResult();
         }
     }
 }

@@ -20,7 +20,7 @@ using SpaManagement.Utility;
 
 namespace SpaManagement.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -130,21 +130,8 @@ namespace SpaManagement.Areas.Identity.Pages.Account
             {
                 ApplicationUser applicationUser = new ApplicationUser();
                 StaffUser staffUser = new StaffUser();
-                Customer customer = new Customer();
                 IdentityResult result = new IdentityResult();
-                if (Input.Role == SD.Role_Customer)
-                {
-                    customer = new Customer()
-                    {
-                        UserName = Input.Email, 
-                        Email = Input.Email,
-                        PhoneNumber = Input.PhoneNumber,
-                        Role = Input.Role,
-                        Name = Input.Name
-                    };
-                    result = await _userManager.CreateAsync(customer, Input.Password);
-                    
-                }else if (Input.Role == SD.Role_Staff)
+                if (Input.Role == SD.Role_Staff)
                 {
                     staffUser = new StaffUser()
                     {
@@ -173,19 +160,7 @@ namespace SpaManagement.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (User.IsInRole(SD.Role_Customer))
-                    {
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(customer);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = customer.Id, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                    }else if (User.IsInRole(SD.Role_Staff))
+                    if (User.IsInRole(SD.Role_Staff))
                     {
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(staffUser);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -219,10 +194,7 @@ namespace SpaManagement.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        if (User.IsInRole(SD.Role_Customer))
-                        {
-                            await _signInManager.SignInAsync(customer, isPersistent: false);
-                        }else if (User.IsInRole(SD.Role_Staff))
+                        if (User.IsInRole(SD.Role_Staff))
                         {
                             await _signInManager.SignInAsync(staffUser, isPersistent: false);
                         }

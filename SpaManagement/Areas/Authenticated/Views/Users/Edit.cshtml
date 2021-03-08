@@ -1,0 +1,184 @@
+@using SpaManagement.Utility.Enum
+@model SpaManagement.ViewModels.UsersViewModel
+
+@{
+    var title = "Edit User Profile";
+    Layout = "_Layout";
+}
+
+@* @if (@Model.Customer != null) *@
+@* { *@
+@*     <form method="post"> *@
+@*         <div class="row p-3 border bg-white"> *@
+@*             <div class="col-12 border-bottom"> *@
+@*                 <h2 class="text-primary">@title</h2> *@
+@*             </div> *@
+@*             <div class="col-8 pt-4"> *@
+@*                 <partial name="_StatusMessage" model="@ViewData["Message"]" /> *@
+@*                 <input type="hidden" asp-for="Customer.Id" /> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-4"> *@
+@*                         <label asp-for="Customer.Name"></label> *@
+@*                     </div> *@
+@*                     <div class="col-8"> *@
+@*                         <input asp-for="Customer.Name" class="form-control"> *@
+@*                         <span asp-validation-for="Customer.Name" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-4"> *@
+@*                         <label asp-for="Customer.PhoneNumber"></label> *@
+@*                     </div> *@
+@*                     <div class="col-8"> *@
+@*                         <input asp-for="Customer.PhoneNumber" class="form-control"> *@
+@*                         <span asp-validation-for="Customer.PhoneNumber" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-4"> *@
+@*                         <label asp-for="Customer.Job"></label> *@
+@*                     </div> *@
+@*                     <div class="col-8"> *@
+@*                         <input asp-for="Customer.Job" class="form-control"> *@
+@*                         <span asp-validation-for="Customer.Job" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-4"> *@
+@*                         <label asp-for="Customer.IdentityCard"></label> *@
+@*                     </div> *@
+@*                     <div class="col-8"> *@
+@*                         <input asp-for="Customer.IdentityCard" class="form-control"> *@
+@*                         <span asp-validation-for="Customer.IdentityCard" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-4"> *@
+@*                         <label asp-for="Customer.DateOfBirth"></label> *@
+@*                     </div> *@
+@*                     <div class="col-8"> *@
+@*                         <input asp-for="Customer.DateOfBirth" class="form-control"> *@
+@*                         <span asp-validation-for="Customer.DateOfBirth" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-4"> *@
+@*                         Sex *@
+@*                     </div> *@
+@*                     <div class="col-8"> *@
+@*                         <select asp-for="Customer.Sex" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"> *@
+@*                             <option selected="selected" value="">Please select</option> *@
+@*                         </select> *@
+@*                         <span asp-validation-for="Customer.Sex" class="text-danger"></span> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 <div class="form-group row"> *@
+@*                     <div class="col-8 offset-4"> *@
+@*                         <div class="row"> *@
+@*                             <div class="col"> *@
+@*                                 <button type="submit" class="btn btn-primary form-control">Update</button> *@
+@*                             </div> *@
+@*                             <div class="col"> *@
+@*                                 <a asp-action="Index" class="btn btn-primary form-control">Back To List</a> *@
+@*                             </div> *@
+@*                         </div> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </form> *@
+@* } *@
+@if (@Model.Staff != null)
+{
+    <form method="post">
+     <div class="row p-3 border bg-white">
+         <div class="col-12 border-bottom">
+             <h2 class="text-primary">@title</h2>
+         </div>
+         <div class="col-8 pt-4">
+             <input type="hidden" asp-for="Staff.Id" />
+             <partial name="_StatusMessage" model="@ViewData["Message"]" />
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="Staff.Name"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="Staff.Name" class="form-control">
+                     <span asp-validation-for="Staff.Name" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="Staff.PhoneNumber"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="Staff.PhoneNumber" class="form-control">
+                     <span asp-validation-for="Staff.PhoneNumber" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="Staff.BranchId"></label>
+                 </div>
+                 <div class="col-8">
+                      @Html.DropDownListFor(m => m.Staff.BranchId, Model.BranchList, "-Select a Category", new {@class = "form-control"})
+                      <span asp-validation-for="Staff.BranchId" class="text-danger"></span>
+                      
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-8 offset-4">
+                     <div class="row">
+                         <div class="col">
+                             <button type="submit" class="btn btn-primary form-control">Update</button>
+                         </div>
+                         <div class="col">
+                             <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         </div>
+     </form>
+}
+@if (@Model.ApplicationUser != null)
+{
+    <form method="post">
+        <div class="row p-3 border bg-white">
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <input type="hidden" asp-for="ApplicationUser.Id"/>
+                <partial name="_StatusMessage" model="@ViewData["Message"]"/>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ApplicationUser.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="ApplicationUser.Name" class="form-control">
+                        <span asp-validation-for="ApplicationUser.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Update</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
