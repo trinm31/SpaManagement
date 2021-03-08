@@ -20,7 +20,7 @@ using SpaManagement.Utility;
 
 namespace SpaManagement.Areas.Identity.Pages.Account
 {
-    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
+    [Authorize(Roles = SD.Role_Admin)]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -84,41 +84,21 @@ namespace SpaManagement.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            if (User.IsInRole(SD.Role_Admin))
+            
+            IEnumerable<Branch> branchList = await _unitOfWork.Branch.GetAllAsync();
+            Input = new InputModel()
             {
-                IEnumerable<Branch> branchList = await _unitOfWork.Branch.GetAllAsync();
-                Input = new InputModel()
+                RoleList = _roleManager.Roles.Select(x=> x.Name).Select(i=> new SelectListItem
                 {
-                    RoleList = _roleManager.Roles.Where(x=> x.Name != SD.Role_Customer).Select(x=> x.Name).Select(i=> new SelectListItem
-                    {
-                        Text = i,
-                        Value = i
-                    }),
-                    BranchList = branchList.Select(i=> new SelectListItem
-                    {
-                        Text = i.Name,
-                        Value = i.Id.ToString()
-                    })
-                };
-            }
-
-            if (User.IsInRole(SD.Role_Staff))
-            {
-                IEnumerable<Branch> branchList = await _unitOfWork.Branch.GetAllAsync();
-                Input = new InputModel()
+                    Text = i,
+                    Value = i
+                }),
+                BranchList = branchList.Select(i=> new SelectListItem
                 {
-                    RoleList = _roleManager.Roles.Where(x=> x.Name == SD.Role_Customer).Select(x=> x.Name).Select(i=> new SelectListItem
-                    {
-                        Text = i,
-                        Value = i
-                    }),
-                    BranchList = branchList.Select(i=> new SelectListItem
-                    {
-                        Text = i.Name,
-                        Value = i.Id.ToString()
-                    })
-                };
-            }
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                })
+            };
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 

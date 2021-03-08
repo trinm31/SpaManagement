@@ -14,7 +14,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 {
    
         [Area("Authenticated")]
-        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
+        [Authorize(Roles = SD.Role_Admin)]
         public class UsersController : Controller
         {
             private readonly IUnitOfWork _unitOfWork;
@@ -35,7 +35,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 return View();
             }
-            [Authorize(Roles = SD.Role_Admin)]
             public async Task<IActionResult> ForgotPassword(string id)
             {
                 var user = await _unitOfWork.ApplicationUser.GetAsync(id);
@@ -51,8 +50,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 };
                 return View(UserEmail);
             }
-
-            [Authorize(Roles = SD.Role_Admin)]
             [HttpPost]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -69,11 +66,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 
                     return View("ForgotPasswordConfirmation");
                 }
-
                 return View(model);
             }
-
-            [Authorize(Roles = SD.Role_Admin)]
             public async Task<IActionResult> ResetPassword(string token, string email)
             {
                 if (token == null || email == null)
@@ -83,8 +77,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 
                 return View();
             }
-
-            [Authorize(Roles = SD.Role_Admin)]
             [HttpPost]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -116,8 +108,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 
                 return View(model);
             }
-
-            [Authorize(Roles = SD.Role_Staff)]
             public async Task<IActionResult> Edit(string id)
             {
                 var user = await _unitOfWork.ApplicationUser.GetAsync(id);
@@ -143,11 +133,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     var staffUser = await _unitOfWork.Staff.GetAsync(id);
                     usersVm.Staff = staffUser;
                 }
-                else if (user.Role == SD.Role_Customer)
-                {
-                    var customer = await _unitOfWork.Customer.GetAsync(id);
-                    usersVm.Customer = customer;
-                }
                 else
                 {
                     usersVm.ApplicationUser = user;
@@ -158,7 +143,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            [Authorize(Roles = SD.Role_Staff)]
             public async Task<IActionResult> Edit(UsersViewModel user)
             {
                 UsersViewModel usersVm = new UsersViewModel();
@@ -180,7 +164,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     _unitOfWork.Save();
                     return RedirectToAction(nameof(Index));
                 }
-                else if (user.Staff != null)
+                if (user.Staff != null)
                 {
                     usersVm.Staff = user.Staff;
                     var staffUsers =
@@ -201,29 +185,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     _unitOfWork.Save();
                     return RedirectToAction(nameof(Index));
                 }
-                else
-                {
-                    // usersVm.Customer = user.Customer;
-                    // var customers =
-                    //     await _unitOfWork.Customer.GetAllAsync(u => u.Id == user.Customer.Id);
-                    // var userEmailDb =
-                    //     await _unitOfWork.Customer.GetAllAsync(u => u.Email == user.Customer.Email);
-                    // var customer = await _unitOfWork.Customer.GetAsync(user.Customer.Id);
-                    // if (!userEmailDb.Any() && !customers.Any())
-                    // {
-                    //     ViewData["Message"] = "Error: User with this email already exists";
-                    //     return View(usersVm);
-                    // }
-                    // customer.Name = user.Staff.Name;
-                    // customer.Sex = user.Customer.Sex;
-                    // customer.IdentityCard = user.Customer.IdentityCard;
-                    // customer.PhoneNumber = user.Customer.PhoneNumber;
-                    // customer.DateOfBirth = user.Customer.DateOfBirth;
-                    // customer.Job = user.Customer.Job;
-                    // await _unitOfWork.Customer.Update(customer);
-                    // _unitOfWork.Save();
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
             }
         }
     

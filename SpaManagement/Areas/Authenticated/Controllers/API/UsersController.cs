@@ -11,7 +11,7 @@ using SpaManagement.Utility;
 namespace SpaManagement.Areas.Authenticated.Controllers.API
 {
     [Area("Authenticated")]
-    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
+    [Authorize(Roles = SD.Role_Admin)]
     public class UsersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -29,29 +29,17 @@ namespace SpaManagement.Areas.Authenticated.Controllers.API
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            if (User.IsInRole(SD.Role_Admin))
-            {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u => u.Id != claims.Value);
-                foreach (var user in userList)
-                {
-                    var usertemp = await _userManager.FindByIdAsync(user.Id);
-                    var roleTemp = await _userManager.GetRolesAsync(usertemp);
-                    user.Role = roleTemp.FirstOrDefault();
-                }
-                return Json(new { data = userList });
-            }
-            var customeruserTemp = await _unitOfWork.ApplicationUser.GetAllAsync();
-            foreach (var user in customeruserTemp)
+           
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u => u.Id != claims.Value);
+            foreach (var user in userList)
             {
                 var usertemp = await _userManager.FindByIdAsync(user.Id);
                 var roleTemp = await _userManager.GetRolesAsync(usertemp);
                 user.Role = roleTemp.FirstOrDefault();
             }
-
-            var traineeUser = customeruserTemp.Where(u => u.Role == SD.Role_Customer);
-            return Json(new { data = traineeUser });
+            return Json(new { data = userList });
         }
         [HttpPost]
         public async Task<IActionResult> LockUnlock([FromBody] string id)

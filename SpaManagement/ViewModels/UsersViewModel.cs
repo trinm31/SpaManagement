@@ -8,7 +8,6 @@ namespace SpaManagement.ViewModels
     {
         public ApplicationUser ApplicationUser { get; set; }
         public StaffUser Staff { get; set; }
-        public Customer Customer { get; set; }
         public IEnumerable<SelectListItem> BranchList { get; set; }
     }
 }
