@@ -1,7 +1,7 @@
 @using SpaManagement.Utility
 @{
     ViewBag.Title = "title";
-    Layout = "_Layout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <br />
@@ -29,15 +29,7 @@
         </thead>
     </table>
 </div>  
-@if (User.IsInRole(SD.Role_Admin))
-{
+
 @section Scripts{
     <script src="~/js/UsersAdmin.js"></script>
-}
-}
-@if (User.IsInRole(SD.Role_Staff))
-{
-@section Scripts{
-    <script src="~/js/UsersStaff.js"></script>
-}
 }

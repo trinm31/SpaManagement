@@ -31,4 +31,8 @@
       <Folder Include="Areas\Unauthenticated\Views" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="wwwroot\helpers\NavigationIndicatorHelper.cs" />
+    </ItemGroup>
+
 </Project>

@@ -46,11 +46,14 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 var nameFromDb =
                     await _unitOfWork.Branch
                         .GetAllAsync(c => c.Name == branch.Name && c.Id != branch.Id);
-                if (branch.Id == 0 && !nameFromDb.Any())
+                var branchCodeFromDb =
+                    await _unitOfWork.Branch
+                        .GetAllAsync(c => c.BranchCode == branch.BranchCode && c.Id != branch.Id);
+                if (branch.Id == 0 && !nameFromDb.Any() && !branchCodeFromDb.Any())
                 {
                     await _unitOfWork.Branch.AddAsync(branch);
                 }
-                else if (branch.Id != 0 && !nameFromDb.Any())
+                else if (branch.Id != 0 && !nameFromDb.Any() && !branchCodeFromDb.Any()) 
                 {
                     await _unitOfWork.Branch.Update(branch);
                 }

@@ -27,6 +27,9 @@ function loadDataTable(){
                                 <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/API/Users/Delete/${data.id}") style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                <a href="/Authenticated/API/Users/Edit/${data.id}" class="btn btn-primary text-white" style="cursor: pointer">
+                                    <i class="fas fa-edit"></i>
+                                </a>     
                                 <a href="/Authenticated/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white " style="cursor: pointer">
                                         Reset Pass
                                 </a> 
@@ -41,6 +44,9 @@ function loadDataTable(){
                                 <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/API/Users/Delete/${data.id}") style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                 <a href="/Authenticated/API/Users/Edit/${data.id}" class="btn btn-primary text-white" style="cursor: pointer">
+                                    <i class="fas fa-edit"></i>
+                                </a>     
                                 <a href="/Authenticated/API/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white" style="cursor: pointer">
                                         Reset Pass
                                 </a>  
