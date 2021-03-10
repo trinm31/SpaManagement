@@ -1,15 +1,16 @@
-@model SpaManagement.Models.Branch
+@using SpaManagement.Utility.Enum
+@model SpaManagement.Models.Customer
 
 @{
-    var title = "Create Branch";
+    var title = "Create Customer";
     Layout = "_Layout";
 }
 <form method="post">
     <div class="row p-3 border bg-white">
-        @if (Model.Id != 0)
+        @if (Model.id != 0)
         {
-            <input type="hidden" asp-for="Id">
-            title = "Edit Branch";
+            <input type="hidden" asp-for="id">
+            title = "Edit Customer";
         }
         <div class="col-12 border-bottom">
             <h2 class="text-primary">@title</h2>
@@ -27,54 +28,56 @@
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Address"></label>
+                    <label asp-for="IdentityCard"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Address" class="form-control">
-                    <span asp-validation-for="Address" class="text-danger"></span>
+                    <input asp-for="IdentityCard" class="form-control">
+                    <span asp-validation-for="IdentityCard" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="PhoneNumber"></label>
+                    <label asp-for="Phone"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="PhoneNumber" class="form-control">
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <input asp-for="Phone" class="form-control">
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Email"></label>
+                    <label asp-for="Sex"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Email" class="form-control">
-                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <select asp-for="Sex" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control">
+                        <option selected="selected" value="">Please select</option>
+                    </select>
+                    <span asp-validation-for="Sex" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="ContactVia"></label>
+                    <label asp-for="DateOfBirth"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="ContactVia" class="form-control">
-                    <span asp-validation-for="ContactVia" class="text-danger"></span>
+                    <input asp-for="DateOfBirth" class="form-control">
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="BranchCode"></label>
+                    <label asp-for="Job"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="BranchCode" class="form-control">
-                    <span asp-validation-for="BranchCode" class="text-danger"></span>
+                    <input asp-for="Job" class="form-control">
+                    <span asp-validation-for="Job" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-8 offset-4">
-                    @if (Model.Id != 0)
+                    @if (Model.id != 0)
                     {
-                        <partial name="_EditAndBackToListButton" model="@Model.Id"/>
+                        <partial name="_EditAndBackToListButton" model="@Model.id"/>
                     }
                     else
                     {

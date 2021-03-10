@@ -1,7 +1,7 @@
 @model SpaManagement.Models.TypeOfProduct
 
 @{
-    var title = "Create Category";
+    var title = "Create Type";
     Layout = "_Layout";
 }
 <form method="post">
@@ -9,7 +9,7 @@
         @if (Model.Id != 0)
         {
             <input type="hidden" asp-for="Id">
-            title = "Edit Category";
+            title = "Edit Type";
         }
         <div class="col-12 border-bottom">
             <h2 class="text-primary">@title</h2>

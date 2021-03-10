@@ -46,21 +46,42 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 var nameFromDb =
                     await _unitOfWork.TypeOfProduct
                         .GetAllAsync(c => c.Name == typeOfProduct.Name && c.Id != typeOfProduct.Id);
-                var branchCodeFromDb =
+                var typeCodeFromDb =
                     await _unitOfWork.TypeOfProduct
                         .GetAllAsync(c => c.TypeCode == typeOfProduct.TypeCode && c.Id != typeOfProduct.Id);
-                if (typeOfProduct.Id == 0 && !nameFromDb.Any() && !branchCodeFromDb.Any())
+                if (typeOfProduct.Id == 0)
                 {
-                    await _unitOfWork.TypeOfProduct.AddAsync(typeOfProduct);
+                    if (nameFromDb.Any())
+                    {
+                        ViewData["Message"] = "Error: Name already exists";
+                        return View(typeOfProduct);
+                    } 
+                    else if (typeCodeFromDb.Any())
+                    {
+                        ViewData["Message"] = "Error: Type Code already exists";
+                        return View(typeOfProduct);
+                    }
+                    else
+                    {
+                        await _unitOfWork.TypeOfProduct.AddAsync(typeOfProduct);
+                    }
                 }
-                else if (typeOfProduct.Id != 0 && !nameFromDb.Any() && !branchCodeFromDb.Any()) 
+                if (typeOfProduct.Id != 0 && !nameFromDb.Any() && !typeCodeFromDb.Any()) 
                 {
-                    await _unitOfWork.TypeOfProduct.Update(typeOfProduct);
-                }
-                else
-                {
-                    ViewData["Message"] = "Error: Name already exists";
-                    return View(typeOfProduct);
+                    if (nameFromDb.Any())
+                    {
+                        ViewData["Message"] = "Error: Name already exists";
+                        return View(typeOfProduct);
+                    } 
+                    else if (typeCodeFromDb.Any())
+                    {
+                        ViewData["Message"] = "Error: Type Code already exists";
+                        return View(typeOfProduct);
+                    }
+                    else
+                    {
+                        await _unitOfWork.TypeOfProduct.Update(typeOfProduct);
+                    }
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));

@@ -10,11 +10,11 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class BranchsController : Controller
+    public class SuppliersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public BranchsController(IUnitOfWork unitOfWork)
+        public SuppliersController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -24,71 +24,72 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         }
         public async Task<IActionResult> Upsert(int? id)
         {
-            Branch branch = new Branch();
+            Supplier supplier = new Supplier();
             if (id == null)
             {
-                return View(branch);
+                return View(supplier);
             }
 
-            branch = await _unitOfWork.Branch.GetAsync(id.GetValueOrDefault());
-            if (branch == null)
+            supplier = await _unitOfWork.Supplier.GetAsync(id.GetValueOrDefault());
+            if (supplier == null)
             {
                 return NotFound();
             }
-            return View(branch);
+            return View(supplier);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(Branch branch)
+        public async Task<IActionResult> Upsert(Supplier supplier)
         {
             if (ModelState.IsValid)
             {
                 var nameFromDb =
-                    await _unitOfWork.Branch
-                        .GetAllAsync(c => c.Name == branch.Name && c.Id != branch.Id);
-                var branchCodeFromDb =
-                    await _unitOfWork.Branch
-                        .GetAllAsync(c => c.BranchCode == branch.BranchCode && c.Id != branch.Id);
-                if (branch.Id == 0)
+                    await _unitOfWork.Supplier
+                        .GetAllAsync(c => c.Name == supplier.Name && c.Id != supplier.Id);
+                var suppliersCodeFromDb =
+                    await _unitOfWork.Supplier
+                        .GetAllAsync(c => c.SupplierCode == supplier.SupplierCode && c.Id != supplier.Id);
+                if (supplier.Id == 0)
                 {
                     if (nameFromDb.Any())
                     {
                         ViewData["Message"] = "Error: Name already exists";
-                        return View(branch);
+                        return View(supplier);
                     } 
-                    else if (branchCodeFromDb.Any())
+                    else if (suppliersCodeFromDb.Any())
                     {
-                        ViewData["Message"] = "Error: Branch Code already exists";
-                        return View(branch);
+                        ViewData["Message"] = "Error: Supplier Code already exists";
+                        return View(supplier);
                     }
                     else
                     {
-                        await _unitOfWork.Branch.AddAsync(branch);
+                        await _unitOfWork.Supplier.AddAsync(supplier);
                     }
-                    
+
                 }
-               
-                if (branch.Id != 0) 
+
+                if (supplier.Id != 0)
                 {
                     if (nameFromDb.Any())
                     {
                         ViewData["Message"] = "Error: Name already exists";
-                        return View(branch);
-                    } 
-                    else if (branchCodeFromDb.Any())
+                        return View(supplier);
+                    }
+                    else if (suppliersCodeFromDb.Any())
                     {
-                        ViewData["Message"] = "Error: Branch Code already exists";
-                        return View(branch);
+                        ViewData["Message"] = "Error: Supplier Code already exists";
+                        return View(supplier);
                     }
                     else
                     {
-                        await _unitOfWork.Branch.Update(branch);
+                        await _unitOfWork.Supplier.Update(supplier);
                     }
                 }
+                
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
-            return View(branch);
+            return View(supplier);
         }
     }
 }
