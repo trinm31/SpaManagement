@@ -10,11 +10,11 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class BranchsController : Controller
+    public class TypeOfProductsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public BranchsController(IUnitOfWork unitOfWork)
+        public TypeOfProductsController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -24,48 +24,48 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         }
         public async Task<IActionResult> Upsert(int? id)
         {
-            Branch branch = new Branch();
+            TypeOfProduct typeOfProduct = new TypeOfProduct();
             if (id == null)
             {
-                return View(branch);
+                return View(typeOfProduct);
             }
 
-            branch = await _unitOfWork.Branch.GetAsync(id.GetValueOrDefault());
-            if (branch == null)
+            typeOfProduct = await _unitOfWork.TypeOfProduct.GetAsync(id.GetValueOrDefault());
+            if (typeOfProduct == null)
             {
                 return NotFound();
             }
-            return View(branch);
+            return View(typeOfProduct);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(Branch branch)
+        public async Task<IActionResult> Upsert(TypeOfProduct typeOfProduct)
         {
             if (ModelState.IsValid)
             {
                 var nameFromDb =
-                    await _unitOfWork.Branch
-                        .GetAllAsync(c => c.Name == branch.Name && c.Id != branch.Id);
+                    await _unitOfWork.TypeOfProduct
+                        .GetAllAsync(c => c.Name == typeOfProduct.Name && c.Id != typeOfProduct.Id);
                 var branchCodeFromDb =
-                    await _unitOfWork.Branch
-                        .GetAllAsync(c => c.BranchCode == branch.BranchCode && c.Id != branch.Id);
-                if (branch.Id == 0 && !nameFromDb.Any() && !branchCodeFromDb.Any())
+                    await _unitOfWork.TypeOfProduct
+                        .GetAllAsync(c => c.TypeCode == typeOfProduct.TypeCode && c.Id != typeOfProduct.Id);
+                if (typeOfProduct.Id == 0 && !nameFromDb.Any() && !branchCodeFromDb.Any())
                 {
-                    await _unitOfWork.Branch.AddAsync(branch);
+                    await _unitOfWork.TypeOfProduct.AddAsync(typeOfProduct);
                 }
-                else if (branch.Id != 0 && !nameFromDb.Any() && !branchCodeFromDb.Any()) 
+                else if (typeOfProduct.Id != 0 && !nameFromDb.Any() && !branchCodeFromDb.Any()) 
                 {
-                    await _unitOfWork.Branch.Update(branch);
+                    await _unitOfWork.TypeOfProduct.Update(typeOfProduct);
                 }
                 else
                 {
                     ViewData["Message"] = "Error: Name already exists";
-                    return View(branch);
+                    return View(typeOfProduct);
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
-            return View(branch);
+            return View(typeOfProduct);
         }
     }
 }
