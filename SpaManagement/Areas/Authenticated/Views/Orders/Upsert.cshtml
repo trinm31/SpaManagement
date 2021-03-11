@@ -1,0 +1,112 @@
+@using SpaManagement.Utility.Enum
+@model SpaManagement.ViewModels.OrderViewModel
+
+@{
+    var title = "Create Account";
+    Layout = "_Layout";
+}
+<form method="post">
+    <div class="row p-3 border bg-white">
+        @if (Model.Order.Id != 0)
+        {
+            <input type="hidden" asp-for="Order.Id">
+            title = "Edit Account";
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <partial name="_StatusMessage" model="@ViewData["Message"]" />
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.CustomerId"></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Order.CustomerId, Model.CustomersList, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="Order.CustomerId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.Name"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.Name" class="form-control">
+                    <span asp-validation-for="Order.Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.OrderDate"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.OrderDate" class="form-control">
+                    <span asp-validation-for="Order.OrderDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.OrderType"></label>
+                </div>
+                <div class="col-8">
+                    <select asp-for="Order.OrderType" asp-items="Html.GetEnumSelectList<OrderType>()" class="form-control">
+                        <option selected="selected" value="">Please select</option>
+                    </select>
+                    <span asp-validation-for="Order.OrderType" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.Amount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.Amount" class="form-control">
+                    <span asp-validation-for="Order.Amount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.PaidAmount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.PaidAmount" class="form-control">
+                    <span asp-validation-for="Order.PaidAmount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.Debt"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.Debt" class="form-control">
+                    <span asp-validation-for="Order.Debt" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.Note"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.Note" class="form-control">
+                    <span asp-validation-for="Order.Note" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Order.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButton" model="@Model.Order.Id"/>
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButton"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
