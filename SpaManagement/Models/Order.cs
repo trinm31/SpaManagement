@@ -16,8 +16,6 @@ namespace SpaManagement.Models
         [Required]
         public OrderType OrderType { get; set; }
         [Required]
-        public double Amount { get; set; }
-        [Required]
         public double PaidAmount { get; set; }
         [Required]
         public double Debt { get; set; }
