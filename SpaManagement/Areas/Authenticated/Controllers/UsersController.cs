@@ -171,17 +171,16 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     await _unitOfWork.Staff.GetAllAsync(u => u.Id == user.Staff.Id);
                 var userEmailDb =
                     await _unitOfWork.Staff.GetAllAsync(u => u.Email == user.Staff.Email);
-                var staffUser = await _unitOfWork.Staff.GetAsync(user.Staff.Id);
+                var profile = await _unitOfWork.Staff.GetAsync(user.Staff.Id);
                 if (!userEmailDb.Any() && !staffUsers.Any())
                 {
                     ViewData["Message"] = "Error: User with this email already exists";
                     return View(usersVm);
                 }
-                staffUser.Name = user.Staff.Name;
-                staffUser.BranchId = user.Staff.BranchId;
-                staffUser.PhoneNumber = user.Staff.PhoneNumber;
-                staffUser.BranchId = user.Staff.BranchId;
-                await _unitOfWork.Staff.Update(staffUser);
+                profile.Name = user.Staff.Name;
+                profile.BranchId = user.Staff.BranchId;
+                profile.PhoneNumber = user.Staff.PhoneNumber;
+                await _unitOfWork.Staff.Update(profile);
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }

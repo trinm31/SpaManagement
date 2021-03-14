@@ -1,0 +1,91 @@
+@model SpaManagement.Models.CategoryService
+
+@{
+    var title = "Create Services";
+    Layout = "_Layout";
+}
+<form method="post">
+    <div class="row p-3 border bg-white">
+        @if (Model.Id != 0)
+        {
+            <input type="hidden" asp-for="Id">
+            title = "Edit Services";
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <partial name="_StatusMessage" model="@ViewData["Message"]" />
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Name"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="UseTime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="UseTime" class="form-control">
+                    <span asp-validation-for="UseTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Price"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Price" class="form-control">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Discount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Discount" class="form-control">
+                    <span asp-validation-for="Discount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Note"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Note" class="form-control">
+                    <span asp-validation-for="Note" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceCode"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ServiceCode" class="form-control">
+                    <span asp-validation-for="ServiceCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButton" model="@Model.Id"/>
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButton"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

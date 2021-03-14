@@ -1,0 +1,92 @@
+@using SpaManagement.Utility.Enum
+@model SpaManagement.ViewModels.OrderViewModel
+
+@{
+    var title = "Create Order";
+    Layout = "_Layout";
+}
+<form method="post">
+    <div class="row p-3 border bg-white">
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <partial name="_StatusMessage" model="@ViewData["Message"]" />
+             <input asp-for="Order.CustomerId" type="hidden">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label>Product</label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.Id, Model.Products, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="Product.Id" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Price"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Price" class="form-control">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Quantity"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Quantity" class="form-control">
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Discount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Discount" class="form-control">
+                    <span asp-validation-for="Discount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.OrderType"></label>
+                </div>
+                <div class="col-8">
+                    <select asp-for="Order.OrderType" asp-items="Html.GetEnumSelectList<OrderType>()" class="form-control">
+                        <option selected="selected" value="">Please select</option>
+                    </select>
+                    <span asp-validation-for="Order.OrderType" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.PaidAmount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.PaidAmount" class="form-control">
+                    <span asp-validation-for="Order.PaidAmount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Order.Note"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Order.Note" class="form-control">
+                    <span asp-validation-for="Order.Note" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <partial name="_CreateAndBackToListButton"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

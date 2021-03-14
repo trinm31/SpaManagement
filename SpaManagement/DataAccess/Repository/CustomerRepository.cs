@@ -10,6 +10,7 @@ namespace SpaManagement.DataAccess.Repository
         private readonly ApplicationDbContext _db;
         public CustomerRepository(ApplicationDbContext db) : base(db)
         {
+            _db = db;
         }
 
         public async Task Update(Customer customer)

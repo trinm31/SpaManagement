@@ -1,0 +1,91 @@
+@model SpaManagement.ViewModels.ServiceDetailViewModel
+
+@{
+    var title = "Create Branch";
+    Layout = "_Layout";
+}
+<form method="post">
+    <div class="row p-3 border bg-white">
+        @if (Model.ServiceDetail.Id != 0)
+        {
+            <input type="hidden" asp-for="ServiceDetail.Id">
+            title = "Edit Branch";
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <partial name="_StatusMessage" model="@ViewData["Message"]" />
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceDetail.OrderDate"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ServiceDetail.OrderDate" class="form-control">
+                    <span asp-validation-for="ServiceDetail.OrderDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceDetail.Slottime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ServiceDetail.Slottime" class="form-control">
+                    <span asp-validation-for="ServiceDetail.Slottime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceDetail.Discount"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ServiceDetail.Discount" class="form-control">
+                    <span asp-validation-for="ServiceDetail.Discount" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceDetail.UseTime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="ServiceDetail.UseTime" class="form-control">
+                    <span asp-validation-for="ServiceDetail.UseTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceDetail.CustomerId"></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.ServiceDetail.CustomerId, Model.CustomerList, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="ServiceDetail.CustomerId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="ServiceDetail.ServiceId"></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.ServiceDetail.ServiceId, Model.CategoryServiceList, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="ServiceDetail.ServiceId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.ServiceDetail.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButton" model="@Model.ServiceDetail.Id"/>
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButton"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
