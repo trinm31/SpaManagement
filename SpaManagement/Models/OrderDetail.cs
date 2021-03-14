@@ -12,8 +12,6 @@ namespace SpaManagement.Models
         [Required]
         public int Quantity { get; set; }
         [Required]
-        public double Amount { get; set; }
-        [Required]
         public double Discount { get; set; }
         [Required]
         public int OrderID { get; set; }

@@ -10,6 +10,7 @@ using SpaManagement.Models;
 using SpaManagement.Utility;
 using SpaManagement.ViewModels;
 
+
 namespace SpaManagement.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
@@ -26,36 +27,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> Upsert(int? id)
-        {
-            IEnumerable<Branch> branchList = await _unitOfWork.Branch.GetAllAsync();
-            IEnumerable<Product> productList = await _unitOfWork.Product.GetAllAsync();
-            ProductDetailViewModel productDetailViewModel = new ProductDetailViewModel()
-            {
-                BranchList = branchList.Select(I => new SelectListItem
-                {
-                    Text = I.Name,
-                    Value = I.Id.ToString()
-                }),
-                ProductList = productList.Select(I => new SelectListItem
-                {
-                    Text = I.Name,
-                    Value = I.Id.ToString()
-                }),
-                ProductDetails = new ProductDetail()
-            };
-            if (id == null)
-            {
-                return View(productDetailViewModel);
-            }
-
-            productDetailViewModel.ProductDetails = await _unitOfWork.ProductDetail.GetAsync(id.GetValueOrDefault());
-            if (productDetailViewModel.ProductDetails == null)
-            {
-                return NotFound();
-            }
-            return View(productDetailViewModel);
-        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(ProductDetailViewModel productDetailViewModel)

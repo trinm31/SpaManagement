@@ -13,7 +13,6 @@ function loadDataTable(){
             {"data": "name", "width": "10%"},
             {"data": "importPrice", "width": "10%"},
             {"data": "price", "width": "10%"},
-            {"data": "quantity", "width": "10%"},
             {"data": "supplier.name", "width": "10%"},
             {"data": "typeOfProduct.name", "width": "10%"},
             {"data": "manufacturer.name", "width": "10%"},

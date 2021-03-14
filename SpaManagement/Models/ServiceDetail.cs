@@ -15,6 +15,8 @@ namespace SpaManagement.Models
         [Required]
         public double Debt { get; set; }
         [Required]
+        public double Price { get; set; }
+        [Required]
         public double Paid { get; set; }
         [Required]
         public double Discount { get; set; }

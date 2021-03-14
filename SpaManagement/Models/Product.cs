@@ -16,8 +16,6 @@ namespace SpaManagement.Models
         [Required]
         public double Price { get; set; }
         [Required]
-        public int Quantity { get; set; }
-        [Required]
         public string BarcodeId { get; set; }
         [Required]
         public int SupplierID { get; set; }

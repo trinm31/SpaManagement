@@ -9,19 +9,19 @@ namespace SpaManagement.Models
     {
         [Key] 
         public int Id { get; set; }
-        [Required] 
-        public string Name { get; set; }
         [Required]
         public DateTime OrderDate { get; set; }
         [Required]
         public OrderType OrderType { get; set; }
+        [Required]
+        public double Amount { get; set; }
         [Required]
         public double PaidAmount { get; set; }
         [Required]
         public double Debt { get; set; }
         public string Note { get; set; }
         [Required] 
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         [ForeignKey("CustomerId")] 
         public Customer Customer { get; set; }
     }

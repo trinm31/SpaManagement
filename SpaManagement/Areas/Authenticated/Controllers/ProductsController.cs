@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,13 +48,18 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     Text = I.Name,
                     Value = I.Id.ToString()
                 }),
+                Quantity = 0,
                 Product = new Product()
             };
             if (id == null)
             {
                 return View(productsViewModel);
             }
-
+            IEnumerable<ProductDetail> productDetails = await _unitOfWork.ProductDetail.GetAllAsync(p=> p.ProductID == id);
+            foreach (var productDetail in productDetails)
+            {
+                productsViewModel.Quantity += productDetail.Quantity;
+            }
             productsViewModel.Product = await _unitOfWork.Product.GetAsync(id.GetValueOrDefault());
             if (productsViewModel.Product == null)
             {
@@ -68,6 +74,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             IEnumerable<TypeOfProduct> typeOfProducts = await _unitOfWork.TypeOfProduct.GetAllAsync();
             IEnumerable<Supplier> suppliers = await _unitOfWork.Supplier.GetAllAsync();
             IEnumerable<Manufacturer> manufacturers = await _unitOfWork.Manufacturer.GetAllAsync();
+            IEnumerable<ProductDetail> productDetails = await _unitOfWork.ProductDetail.GetAllAsync(p=> p.ProductID == productsViewModel.Product.Id);
             if (ModelState.IsValid)
             {
                 var nameFromDb =
@@ -97,8 +104,13 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                                 Text = I.Name,
                                 Value = I.Id.ToString()
                             }),
+                            Quantity = 0,
                             Product = new Product()
                         };
+                        foreach (var productDetail in productDetails)
+                        {
+                            productsViewModel.Quantity += productDetail.Quantity;
+                        }
                         ViewData["Message"] = "Error: Name already exists";
                         return View(productsViewModel);
                     } 
@@ -121,8 +133,13 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                                 Text = I.Name,
                                 Value = I.Id.ToString()
                             }),
+                            Quantity = 0,
                             Product = new Product()
                         };
+                        foreach (var productDetail in productDetails)
+                        {
+                            productsViewModel.Quantity += productDetail.Quantity;
+                        }
                         ViewData["Message"] = "Error: Barcode Id already exists";
                         return View(productsViewModel);
                     }
@@ -154,6 +171,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                                 Text = I.Name,
                                 Value = I.Id.ToString()
                             }),
+                            Quantity = 0,
                             Product = new Product()
                         };
                         ViewData["Message"] = "Error: Name already exists";
@@ -178,8 +196,13 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                                 Text = I.Name,
                                 Value = I.Id.ToString()
                             }),
+                            Quantity = 0,
                             Product = new Product()
                         };
+                        foreach (var productDetail in productDetails)
+                        {
+                            productsViewModel.Quantity += productDetail.Quantity;
+                        }
                         ViewData["Message"] = "Error: Branch Id already exists";
                         return View(productsViewModel);
                     }
@@ -208,8 +231,13 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     Text = I.Name,
                     Value = I.Id.ToString()
                 }),
+                Quantity = 0,
                 Product = new Product()
             };
+            foreach (var productDetail in productDetails)
+            {
+                productsViewModel.Quantity += productDetail.Quantity;
+            }
             return View(productsViewModel);
         }
     }

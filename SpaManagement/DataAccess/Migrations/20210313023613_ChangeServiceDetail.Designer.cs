@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpaManagement.DataAccess.Data;
 
 namespace SpaManagement.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210313023613_ChangeServiceDetail")]
+    partial class ChangeServiceDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,10 +230,7 @@ namespace SpaManagement.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("BalanceCredit")
-                        .HasColumnType("float");
-
-                    b.Property<double>("BalanceDebt")
+                    b.Property<double>("Balance")
                         .HasColumnType("float");
 
                     b.Property<double>("Credit")
@@ -242,6 +241,9 @@ namespace SpaManagement.DataAccess.Migrations
 
                     b.Property<double>("Debt")
                         .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("TransactDate")
                         .HasColumnType("datetime2");
@@ -415,8 +417,7 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("CustomerId")
-                        .IsRequired()
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<double>("Debt")

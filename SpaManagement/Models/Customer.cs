@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using SpaManagement.Utility.Enum;
 
 namespace SpaManagement.Models
