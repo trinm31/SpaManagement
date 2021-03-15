@@ -18,8 +18,7 @@ namespace SpaManagement.Models
         public double BalanceDebt { get; set; }
         [Required] 
         public double BalanceCredit { get; set; }
-        [Required] 
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         [ForeignKey("CustomerId")] 
         public Customer Customer { get; set; }
     }
