@@ -20,7 +20,6 @@ namespace SpaManagement.Models
         [Required]
         public double Debt { get; set; }
         public string Note { get; set; }
-        [Required] 
         public int? CustomerId { get; set; }
         [ForeignKey("CustomerId")] 
         public Customer Customer { get; set; }
