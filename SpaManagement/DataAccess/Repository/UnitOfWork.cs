@@ -24,6 +24,7 @@ namespace SpaManagement.DataAccess.Repository
             ServiceUsers = new ServiceUsersRepository(_db);
             Supplier = new SupplierRepository(_db);
             TypeOfProduct = new TypeOfProductRepository(_db);
+            Notification = new NotificationRepository(_db);
         }
         public void Dispose()
         {
