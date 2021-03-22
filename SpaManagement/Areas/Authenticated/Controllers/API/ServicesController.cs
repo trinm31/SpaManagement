@@ -7,15 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using SpaManagement.DataAccess.Repository.IRepository;
 using SpaManagement.Models;
 using SpaManagement.Utility;
+using SpaManagement.ViewModels;
 
 namespace SpaManagement.Areas.Authenticated.Controllers.API
 {
     [Area("Authenticated")]
     [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
-    public class SoldController : Controller
+    public class ServicesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public SoldController(IUnitOfWork unitOfWork)
+
+        public ServicesController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -24,11 +26,10 @@ namespace SpaManagement.Areas.Authenticated.Controllers.API
             var customerList = await _unitOfWork.Customer.GetAllAsync();
             return Json(new { data = customerList });
         }
-        public async Task<IActionResult> GetProduct()
+        public async Task<IActionResult> GetService()
         {
-            var productList = await _unitOfWork.Product.GetAllAsync();
-            return Json(new { data = productList });
+            var servicelist = await _unitOfWork.CategoryService.GetAllAsync();
+            return Json(new { data = servicelist });
         }
-        
     }
 }
