@@ -20,53 +20,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET
-        public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult Service(int id)
-        {
-            if (id != 0)
-            {
-                _customerId = id;
-            }
-            return View();
-        }
-        public IActionResult OrderConfirmation()
-        {
-            return View();
-        }
-        public IActionResult Summary()
-        {
-            return View();
-        } 
         
-        public IActionResult Plus(int cartId)
-        {
-            var product = _serviceList.Find(p => p.CategoryService.Id == cartId);
-            product.Count += 1;
-            return RedirectToAction(nameof(Summary));
-        }
         
-        public IActionResult Minus(int cartId)
-        {
-            var product = _serviceList.Find(p => p.CategoryService.Id == cartId);
-            if (product.Count == 1)
-            {
-                _serviceList.Remove(product);
-            }
-            else
-            {
-                product.Count -= 1;
-            }
-            return RedirectToAction(nameof(Summary));
-        }
         
-        public IActionResult Remove(int cartId)
-        {
-            var product = _serviceList.Find(p => p.CategoryService.Id == cartId);
-            _serviceList.Remove(product);
-            return RedirectToAction(nameof(Summary));
-        }
     }
 }

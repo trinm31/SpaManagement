@@ -11,7 +11,7 @@ namespace SpaManagement.Models
         [Required]
         public DateTime OrderDate { get; set; }
         [Required]
-        public int Slottime { get; set; }
+        public int Slot { get; set; }
         [Required]
         public double Debt { get; set; }
         [Required]
@@ -20,8 +20,6 @@ namespace SpaManagement.Models
         public double Paid { get; set; }
         [Required]
         public double Discount { get; set; }
-        [Required]
-        public int UseTime { get; set; }
         [Required] 
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")] 

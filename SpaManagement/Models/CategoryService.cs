@@ -11,8 +11,6 @@ namespace SpaManagement.Models
         [Required] 
         public string Name { get; set; }
         [Required] 
-        public int UseTime { get; set; }
-        [Required] 
         public double Price { get; set; }
         [Required] 
         public double Discount { get; set; }
