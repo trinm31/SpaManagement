@@ -7,18 +7,18 @@ $(document).ready(function () {
 function loadDataTable(){
     dataTable = $('#tblData').DataTable({
         "ajax":{
-            "url": "/Authenticated/API/Services/GetCustomer"
+            "url": "/Authenticated/API/Services/GetService"
         },
         "columns":[
             {"data": "name", "width": "20%"},
-            {"data": "phone", "width": "20%"},
-            {"data": "identityCard", "width": "20%"},
+            {"data": "price", "width": "20%"},
+            {"data": "note", "width": "20%"},
             {
                 "data": "id",
                 "render": function (data){
                     return `<div class="text-center">
-                                <a href="/Authenticated/Services/Service/${data}" class="btn btn-success text-white" style="cursor: pointer">
-                                    Service
+                                <a href="/Authenticated/services/Details/${data}" class="btn btn-success text-white" style="cursor: pointer">
+                                    <i class="fas fa-plus"></i>
                                 </a>
                             </div>
                     `;

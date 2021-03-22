@@ -28,11 +28,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Areas\Authenticated\Views\Services" />
       <Folder Include="Areas\Unauthenticated\Views" />
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Include="wwwroot\helpers\Helper.cs" />
       <Compile Include="wwwroot\helpers\NavigationIndicatorHelper.cs" />
     </ItemGroup>
 

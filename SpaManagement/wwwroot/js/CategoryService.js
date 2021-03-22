@@ -12,7 +12,7 @@ function loadDataTable(){
         "columns":[
             {"data": "name", "width": "20%"},
             {"data": "price", "width": "20%"},
-            {"data": "useTime", "width": "20%"},
+            {"data": "note", "width": "20%"},
             {
                 "data": "id",
                 "render": function (data){

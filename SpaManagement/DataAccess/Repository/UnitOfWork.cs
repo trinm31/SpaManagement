@@ -1,5 +1,6 @@
 using SpaManagement.DataAccess.Data;
 using SpaManagement.DataAccess.Repository.IRepository;
+using SpaManagement.Models;
 
 namespace SpaManagement.DataAccess.Repository
 {
@@ -25,6 +26,7 @@ namespace SpaManagement.DataAccess.Repository
             Supplier = new SupplierRepository(_db);
             TypeOfProduct = new TypeOfProductRepository(_db);
             Notification = new NotificationRepository(_db);
+            Slot = new SlotRepository(_db);
         }
         public void Dispose()
         {
@@ -47,11 +49,13 @@ namespace SpaManagement.DataAccess.Repository
         public IServiceUsersRepository ServiceUsers { get; private set;}
         public ISupplierRepository Supplier { get; private set;}
         public ITypeOfProductRepository TypeOfProduct { get; private set;}
+        public ISlotRepository Slot { get; }
 
 
         public void Save()
         {
             _db.SaveChanges();
+            this.Dispose();
         }
     }
 }

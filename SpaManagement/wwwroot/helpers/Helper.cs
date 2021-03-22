@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace SpaManagement.Utility
+namespace SpaManagement.wwwroot.helpers
 {
     public class Helper
     {
