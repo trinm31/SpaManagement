@@ -18,8 +18,6 @@ namespace SpaManagement.Models
         public double Price { get; set; }
         [Required]
         public double Paid { get; set; }
-        [Required]
-        public double Discount { get; set; }
         [Required] 
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")] 

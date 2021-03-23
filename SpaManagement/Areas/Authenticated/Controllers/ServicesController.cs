@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -25,96 +26,144 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            ViewData["Customer"] = TempData["Customer"];
+            ViewData["Service"] = TempData["Service"];
+            IEnumerable<ServiceDetailsViewmodel> serviceDetailsViewmodels = _serviceList;
+            return View(serviceDetailsViewmodels);
         }
-
-        public IActionResult Service(int id)
+        
+        public async Task<IActionResult> Choose(int id)
         {
             if (id != 0)
             {
                 _customerId = id;
             }
-            return View();
-        }
-        
 
-        public async Task<IActionResult> Details(int id)
+            var customer = await _unitOfWork.Customer.GetAsync(id);
+            TempData["Customer"] = $"Success: Customer {customer.Name} is chosen";
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> AddService(int id)
         {
             var service = await _unitOfWork.CategoryService.GetAsync(id);
             if (service == null)
             {
-                return RedirectToAction(nameof(service));
+                TempData["Service"] = $"Error: Service is null";
+                return RedirectToAction(nameof(Index));
             }
 
             ServiceDetailsViewmodel serviceDetails = new ServiceDetailsViewmodel()
             {
-                Service = service
+                Service = service,
+                Slot = 1
             };
-            return View(serviceDetails);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Details(ServiceDetailsViewmodel serviceDetails)
-        {
-            serviceDetails.Service = await _unitOfWork.CategoryService.GetAsync(serviceDetails.Service.Id);
-            var isServiceExist = _serviceList.FindAll(s => s.Service.Id == serviceDetails.Service.Id);
+            var isServiceExist = _serviceList.FindAll(s => s.Service.Id == service.Id);
             if (isServiceExist.Any())
             {
-                var service = _serviceList.Find(s => s.Service.Id == serviceDetails.Service.Id);
-                service.Slot += serviceDetails.Slot;
-                _serviceList.Remove(service);
-                _serviceList.Add(service);
+                var servicetemp = _serviceList.Find(s => s.Service.Id == service.Id);
+                servicetemp.Slot += serviceDetails.Slot;
+                _serviceList.Remove(servicetemp);
+                _serviceList.Add(servicetemp);
+                TempData["Service"] = $"Success: Service is add more";
             }
             else
             {
                 _serviceList.Add(serviceDetails);
+                TempData["Service"] = $"Success: Service is added";
             }
-            return RedirectToAction(nameof(Service));
+            return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> Summary()
+        
+        public IActionResult OrderConfirmation()
         {
-            IEnumerable<ServiceDetailsViewmodel> serviceDetailsViewmodels = _serviceList;
-            return View(serviceDetailsViewmodels);
+            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
         public async Task<IActionResult> SummaryPost()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var currentUser = await _unitOfWork.Staff.GetAsync(claims.Value);
-            var branchId = currentUser.BranchId;
             var customerId = _customerId;
-            return View();
-            //return RedirectToAction(nameof(OrderSummary), new {customerId = customerId, branchId = branchId});
+            return RedirectToAction(nameof(OrderSummary), new {customerId = customerId});
         }
-        // public async Task<IActionResult> OrderSummary(int branchId, int customerId)
-        // {
-        //     double price = 0;
-        //     foreach (var service in _serviceList)
-        //     {
-        //         price += service.Slot * service.Service.Price;
-        //     }
-        //     SoldOrderSummaryViewModel soldOrderSummaryViewModel = new SoldOrderSummaryViewModel()
-        //     {
-        //         BranchId = branchId,
-        //         CustomerId = customerId,
-        //         //ProductList = _productList,
-        //         ProductDetails = new ProductDetail(),
-        //         Order = new Order(),
-        //         Price = price
-        //     };
-        //     soldOrderSummaryViewModel.Order.OrderDate = DateTime.Today;
-        //     soldOrderSummaryViewModel.Order.OrderType = OrderType.Sold;
-        //     return View(soldOrderSummaryViewModel);
-        // }
+        public async Task<IActionResult> OrderSummary(int customerId)
+        {
+            double price = 0;
+            foreach (var service in _serviceList)
+            {
+                price += service.Slot * service.Service.Price * (1-service.Service.Discount);
+            }
+
+            ServiceOrderSummaryViewModel serviceOrderSummaryViewModel = new ServiceOrderSummaryViewModel()
+            {
+                CustomerId = _customerId,
+                ServiceList = _serviceList,
+                Price = price
+            };
+            return View(serviceOrderSummaryViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OrderSummary(ServiceOrderSummaryViewModel serviceOrderSummaryViewModel)
+        {
+            double price = 0;
+            foreach (var service in _serviceList)
+            {
+                price += service.Slot * service.Service.Price * (1-service.Service.Discount);
+            }
+
+            for (int i = 0; i < _serviceList.Count(); i++)
+            {
+                ServiceDetail serviceDetail = new ServiceDetail()
+                {
+                    OrderDate = DateTime.Today,
+                    CustomerId = _customerId,
+                    ServiceId = _serviceList[i].Service.Id,
+                    Price = _serviceList[i].Slot*_serviceList[i].Service.Price*(1-_serviceList[i].Service.Discount),
+                    Slot = _serviceList[i].Slot
+                };
+                if (serviceOrderSummaryViewModel.PaidAmount>= serviceDetail.Price)
+                {
+                    serviceDetail.Paid = serviceDetail.Price;
+                    serviceDetail.Debt = 0;
+                    serviceOrderSummaryViewModel.PaidAmount =
+                        serviceOrderSummaryViewModel.PaidAmount - serviceDetail.Price;
+                    Account account = new Account()
+                    {
+                        TransactDate = DateTime.Today,
+                        Debt = serviceDetail.Debt,
+                        Credit = serviceDetail.Paid,
+                        CustomerId = _customerId
+                    };
+                    await _unitOfWork.Account.AddAsync(account);
+                }
+                else
+                {
+                    serviceDetail.Paid = serviceOrderSummaryViewModel.PaidAmount;
+                    serviceDetail.Debt = serviceDetail.Price - serviceDetail.Paid;
+                    Account account = new Account()
+                    {
+                        TransactDate = DateTime.Today,
+                        Debt = serviceDetail.Debt,
+                        Credit = serviceDetail.Paid,
+                        CustomerId = _customerId
+                    };
+                    await _unitOfWork.Account.AddAsync(account);
+                }
+                await _unitOfWork.ServiceDetail.AddAsync(serviceDetail);
+            }
+            _unitOfWork.Save();
+            _serviceList.Clear();
+            _customerId = 0;
+            return RedirectToAction(nameof(OrderConfirmation));
+        }
         public IActionResult Plus(int cartId)
         {
             var service = _serviceList.Find(p => p.Service.Id == cartId);
             service.Slot += 1;
-            return RedirectToAction(nameof(Summary));
+            return RedirectToAction(nameof(Index));
         }
         
         public IActionResult Minus(int cartId)
@@ -128,14 +177,14 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 service.Slot -= 1;
             }
-            return RedirectToAction(nameof(Summary));
+            return RedirectToAction(nameof(Index));
         }
         
         public IActionResult Remove(int cartId)
         {
             var service = _serviceList.Find(p => p.Service.Id == cartId);
             _serviceList.Remove(service);
-            return RedirectToAction(nameof(Summary));
+            return RedirectToAction(nameof(Index));
         }
     }
 }
