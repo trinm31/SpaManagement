@@ -55,7 +55,6 @@ namespace SpaManagement.DataAccess.Repository
         public void Save()
         {
             _db.SaveChanges();
-            this.Dispose();
         }
     }
 }
