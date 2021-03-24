@@ -97,6 +97,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     await _unitOfWork.Account.AddAsync(account);
                 }
                 _unitOfWork.Save();
+                _customerId = 0;
+                _serviceId = 0;
                 TempData["Form"] = $"Success: Operation successfully";
             }
             else
