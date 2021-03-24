@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SpaManagement.DataAccess.Data;
 
 namespace SpaManagement.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210322084224_FixServicedb")]
+    partial class FixServicedb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -551,6 +553,9 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<double>("Debt")
                         .HasColumnType("float");
 
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
@@ -603,31 +608,6 @@ namespace SpaManagement.DataAccess.Migrations
                     b.HasIndex("StaffId");
 
                     b.ToTable("ServiceUsers");
-                });
-
-            modelBuilder.Entity("SpaManagement.Models.Slot", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("Paid")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ServiceDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ServiceUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceDetailId");
-
-                    b.HasIndex("ServiceUserId");
-
-                    b.ToTable("Slots");
                 });
 
             modelBuilder.Entity("SpaManagement.Models.Supplier", b =>
@@ -837,21 +817,6 @@ namespace SpaManagement.DataAccess.Migrations
                     b.HasOne("SpaManagement.Models.StaffUser", "StaffUser")
                         .WithMany()
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SpaManagement.Models.Slot", b =>
-                {
-                    b.HasOne("SpaManagement.Models.ServiceDetail", "ServiceDetail")
-                        .WithMany()
-                        .HasForeignKey("ServiceDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SpaManagement.Models.ServiceUsers", "ServiceUsers")
-                        .WithMany()
-                        .HasForeignKey("ServiceUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

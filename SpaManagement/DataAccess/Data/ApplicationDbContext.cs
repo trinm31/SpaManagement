@@ -31,5 +31,6 @@ namespace SpaManagement.DataAccess.Data
         public DbSet<ServiceUsers> ServiceUsers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<TypeOfProduct> TypeOfProducts { get; set; }
+        public DbSet<Slot> Slots { get; set; }
     }
 }

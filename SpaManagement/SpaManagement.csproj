@@ -32,7 +32,16 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Include="wwwroot\helpers\Helper.cs" />
       <Compile Include="wwwroot\helpers\NavigationIndicatorHelper.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ServiceUsers\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ServiceUsers\Upsert.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Customer.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Order.cshtml" />
     </ItemGroup>
 
 </Project>

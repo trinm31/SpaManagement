@@ -21,6 +21,7 @@ namespace SpaManagement.DataAccess.Repository.IRepository
         IServiceUsersRepository ServiceUsers { get; }
         ISupplierRepository Supplier { get;}
         ITypeOfProductRepository TypeOfProduct { get; }
+        ISlotRepository Slot { get; }
         
         void Save();
     }

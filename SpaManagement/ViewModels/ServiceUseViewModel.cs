@@ -1,17 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SpaManagement.Models;
 
 namespace SpaManagement.ViewModels
 {
-    public class ServiceDetailViewModel
+    public class ServiceUseViewModel
     {
-        public ServiceDetail ServiceDetail { get; set; }
-        public ServiceUsers ServiceUsers { get; set; }
-        public Slot Slot { get; set; }
+        [Required]
+        public DateTime StartTime { get; set; }
+        [Required]
+        public DateTime EndTime { get; set; }
+        public string Note { get; set; }
         public IEnumerable<SelectListItem> StaffList { get; set; }
         [Required]
         public string StaffId { get; set; }
+        public double Paid { get; set; }
     }
 }
