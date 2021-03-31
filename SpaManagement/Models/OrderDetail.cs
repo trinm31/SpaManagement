@@ -20,5 +20,7 @@ namespace SpaManagement.Models
         public int ProductDetailId { get; set; }
         [ForeignKey("ProductDetailId")]
         public ProductDetail ProductDetail { get; set; }
+        [NotMapped]
+        public string Name { get; set; }
     }
 }
