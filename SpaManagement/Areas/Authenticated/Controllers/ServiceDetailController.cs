@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             };
             if (_serviceId != 0 && _serviceUserId == 0)
                 {
-                    var serviceDetail = await _unitOfWork.ServiceDetail.GetAsync(_serviceId);
+                    var serviceDetail = await _unitOfWork.ServiceDetail.GetFirstOrDefaultAsync(s=> s.Id==_serviceId, includeProperties:"Customer");
                     serviceDetailViewModel = new ServiceDetailViewModel()
                     {
                         ServiceDetail = serviceDetail,
@@ -59,6 +60,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             if (_serviceUserId != 0)
             {
                 var slot = await _unitOfWork.Slot.GetFirstOrDefaultAsync(s=> s.ServiceDetailId == _serviceId && s.ServiceUserId == _serviceUserId);
+                var serviceDetail = await _unitOfWork.ServiceDetail.GetFirstOrDefaultAsync(s=> s.Id==_serviceId, includeProperties:"Customer");
                 var serviceUser = await _unitOfWork.ServiceUsers.GetAsync(_serviceUserId);
                 serviceDetailViewModel = new ServiceDetailViewModel()
                 {
@@ -114,6 +116,14 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             serviceDetailDb.Paid = serviceDetailViewModel.ServiceDetail.Paid;
             serviceDetailDb.Price = serviceDetailViewModel.ServiceDetail.Price;
             await _unitOfWork.ServiceDetail.Update(serviceDetailDb);
+            var accountDb = await _unitOfWork.Account.GetFirstOrDefaultAsync(a =>
+                a.CustomerId == serviceDetailViewModel.ServiceDetail.CustomerId &&
+                a.ServiceDetailId == serviceDetailDb.Id);
+            accountDb.Credit = serviceDetailViewModel.ServiceDetail.Paid;
+            accountDb.Debt =
+                Math.Abs(serviceDetailViewModel.ServiceDetail.Price * serviceDetailViewModel.ServiceDetail.Slot -
+                         serviceDetailViewModel.ServiceDetail.Paid);
+            await _unitOfWork.Account.Update(accountDb);
             _unitOfWork.Save();
             _serviceId = 0;
             return RedirectToAction(nameof(Index));
@@ -127,8 +137,16 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             ServiceUser.Note = serviceDetailViewModel.ServiceUsers.Note;
             ServiceUser.StartTime = serviceDetailViewModel.ServiceUsers.StartTime;
             ServiceUser.EndTime = serviceDetailViewModel.ServiceUsers.EndTime;
-            ServiceUser.StaffId = serviceDetailViewModel.ServiceUsers.StaffId;
-            await _unitOfWork.ServiceUsers.AddAsync(ServiceUser);
+            ServiceUser.StaffId = serviceDetailViewModel.StaffId;
+            await _unitOfWork.ServiceUsers.Update(ServiceUser);
+            var accountDb = await _unitOfWork.Account.GetFirstOrDefaultAsync(a =>
+                a.CustomerId == serviceDetailViewModel.ServiceDetail.CustomerId &&
+                a.ServiceDetailId == serviceDetailViewModel.ServiceDetail.Id);
+            accountDb.Credit = serviceDetailViewModel.ServiceDetail.Paid;
+            accountDb.Debt =
+                Math.Abs(serviceDetailViewModel.ServiceDetail.Price * serviceDetailViewModel.ServiceDetail.Slot -
+                         serviceDetailViewModel.ServiceDetail.Paid);
+            await _unitOfWork.Account.Update(accountDb);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }

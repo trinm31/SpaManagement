@@ -89,7 +89,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 TransactDate = DateTime.Today,
                 Credit = returnViewModels.PaidAmount,
-                CustomerId = returnViewModels.CustomerId
+                CustomerId = returnViewModels.CustomerId,
+                OrderId = returnViewModels.Order.Id
             };
             await _unitOfWork.Account.AddAsync(account);
             _unitOfWork.Save();

@@ -163,7 +163,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 TransactDate = DateTime.Today,
                 Debt = debt,
                 Credit = soldOrderSummaryViewModel.PaidAmount,
-                CustomerId = soldOrderSummaryViewModel.CustomerId
+                CustomerId = soldOrderSummaryViewModel.CustomerId,
+                OrderId = soldOrderSummaryViewModel.Order.Id
             };
             await _unitOfWork.Account.AddAsync(account);
             _productList.Clear();

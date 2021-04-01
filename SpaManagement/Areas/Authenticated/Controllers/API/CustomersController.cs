@@ -19,7 +19,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers.API
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var allcustomer = await _unitOfWork.Customer.GetAllAsync();
+            var allcustomer = await _unitOfWork.Customer.GetAllAsync(c=>c.id != 1);
             return Json(new { data = allcustomer });
         }
         [HttpDelete]

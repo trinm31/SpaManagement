@@ -56,6 +56,7 @@
                 <div class="col-12 border-bottom">
                     <h2 class="text-primary">Edit Service Detail</h2>
                 </div>
+                <input asp-for="ServiceDetail.CustomerId" hidden>
                 <div class="col-8 pt-4">
                     <partial name="_StatusMessage" model="@ViewData["Form"]"/>
                     <div class="form-group row">
@@ -114,6 +115,7 @@
                 <div class="col-12 border-bottom">
                     <h2 class="text-primary">Edit Slot</h2>
                 </div>
+                <input asp-for="ServiceDetail.CustomerId" hidden>
                 <div class="col-8 pt-4">
                     <partial name="_StatusMessage" model="@ViewData["Form"]"/>
                     <div class="form-group row">

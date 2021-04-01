@@ -45,7 +45,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 var nameFromDb =
                     await _unitOfWork.CategoryService
-                        .GetAllAsync(c => c.Name == c.Name && c.Id != categoryService.Id);
+                        .GetAllAsync(c => c.Name == categoryService.Name && c.Id != categoryService.Id);
                 var categoryServiceFromDb =
                     await _unitOfWork.CategoryService
                         .GetAllAsync(c => c.ServiceCode == categoryService.ServiceCode && c.Id != categoryService.Id);

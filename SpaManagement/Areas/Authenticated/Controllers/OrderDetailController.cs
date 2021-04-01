@@ -64,8 +64,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             var orderList = await _unitOfWork.Order.GetAllAsync(includeProperties: "Customer");
             return Json(new {data = orderList});
         }
-        
-
         #endregion
     }
 }
