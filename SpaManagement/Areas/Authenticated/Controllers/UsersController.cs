@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -102,6 +104,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         ModelState.AddModelError("", error.Description);
                     }
 
+                    await notificationTask("User", $"Reset password userid {user.Id}");
                     return View(model);
                 }
             }
@@ -162,6 +165,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 applicationUser.Name = user.ApplicationUser.Name;
                 await _unitOfWork.ApplicationUser.Update(applicationUser);
                 _unitOfWork.Save();
+                await notificationTask("User", $"Update userid {applicationUser.Id}");
                 return RedirectToAction(nameof(Index));
             }
             if (user.Staff != null)
@@ -182,9 +186,25 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 profile.PhoneNumber = user.Staff.PhoneNumber;
                 await _unitOfWork.Staff.Update(profile);
                 _unitOfWork.Save();
+                await notificationTask("User", $"Update userid {profile.Id}");
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

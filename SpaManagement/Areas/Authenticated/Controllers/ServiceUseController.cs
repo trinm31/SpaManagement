@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,7 +79,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 };
                 await _unitOfWork.ServiceUsers.AddAsync(serviceUsers);
                 _unitOfWork.Save();
-            
+                await notificationTask("ServiceUse", $"Add Service User With id {serviceUsers.Id}");
                 Slot slot = new Slot()
                 {
                     ServiceUserId = serviceUsers.Id,
@@ -86,6 +87,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     Paid = serviceUseViewModel.Paid
                 };
                 await _unitOfWork.Slot.AddAsync(slot);
+                await notificationTask("ServiceUse", $"Add Slot With id {slot.Id}");
                 if (serviceDetail.Debt != 0)
                 {
                     Account account = new Account()
@@ -96,6 +98,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
+                    await notificationTask("ServiceUse", $"Add Account With id {account.Id}");
                 }
                 _unitOfWork.Save();
                 _customerId = 0;
@@ -124,5 +127,20 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             return Json(new { data = servicelist });
         }
         #endregion
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
+        }
     }
 }

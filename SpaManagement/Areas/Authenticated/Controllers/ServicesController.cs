@@ -126,6 +126,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 };
                 await _unitOfWork.ServiceDetail.AddAsync(serviceDetail);
                 _unitOfWork.Save();
+                await notificationTask("Service", $"Add Service Detail with Id {serviceDetail.Id}");
                 if (serviceOrderSummaryViewModel.PaidAmount>= serviceDetail.Price)
                 {
                     serviceDetail.Paid = serviceDetail.Price;
@@ -141,6 +142,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
+                    await notificationTask("Service", $"Add Account with Id {account.Id}");
                 }
                 else
                 {
@@ -155,6 +157,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
+                    await notificationTask("Service", $"Add Account with Id {account.Id}");
                 }
                 
             }
@@ -189,6 +192,21 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             var service = _serviceList.Find(p => p.Service.Id == cartId);
             _serviceList.Remove(service);
             return RedirectToAction(nameof(Index));
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

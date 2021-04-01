@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -91,7 +92,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     importViewModel.Order.Debt = debt;
                     await _unitOfWork.Order.AddAsync(importViewModel.Order);
                     _unitOfWork.Save();
-                    
+                    await notificationTask("Import",$"Add Order {importViewModel.Order.Id}");
                     var productDetailDb = await _unitOfWork.ProductDetail.GetFirstOrDefaultAsync(p =>
                         p.BranchID == importViewModel.ProductDetails.BranchID
                         && p.ProductID == importViewModel.ProductDetails.ProductID);
@@ -103,6 +104,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         OrderID = importViewModel.Order.Id
                     };
                     await _unitOfWork.OrderDetail.AddAsync(orderDetail);
+                    await notificationTask("Import",$"Add {orderDetail.Id}");
                     Account account = new Account()
                     {
                         TransactDate = DateTime.Today,
@@ -113,6 +115,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     };
                     await _unitOfWork.Account.AddAsync(account);
                     _unitOfWork.Save();
+                    await notificationTask("Import",$"Add OrderDetail with id {orderDetail.Id}, Account with id {account.Id}");
                     ViewData["Message"] = "Success: Create Successfully";
                 }
             }
@@ -131,6 +134,21 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 ProductDetails = new ProductDetail()
             };
             return View(importViewModel);
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

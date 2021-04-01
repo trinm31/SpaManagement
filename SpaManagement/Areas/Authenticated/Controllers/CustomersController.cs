@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,10 +51,12 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 if (customer.id == 0 && !IdentityromDb.Any())
                 {
                     await _unitOfWork.Customer.AddAsync(customer);
+                    await notificationTask("Customer",$"Add {customer.Name}");
                 }
                 else if (customer.id != 0 && !IdentityromDb.Any()) 
                 {
                     await _unitOfWork.Customer.Update(customer);
+                    await notificationTask("Customer",$"Update {customer.Name}");
                 }
                 else
                 {
@@ -63,6 +67,21 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

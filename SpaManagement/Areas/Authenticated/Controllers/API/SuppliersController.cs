@@ -1,7 +1,10 @@
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaManagement.DataAccess.Repository.IRepository;
+using SpaManagement.Models;
 using SpaManagement.Utility;
 
 namespace SpaManagement.Areas.Authenticated.Controllers.API
@@ -32,8 +35,24 @@ namespace SpaManagement.Areas.Authenticated.Controllers.API
             }
 
             await _unitOfWork.Supplier.RemoveAsync(getSupplier);
+            await notificationTask("Suppliers", $"{getSupplier.Name}");
             _unitOfWork.Save();
             return Json(new { success = true, message = "Delete successful" });
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

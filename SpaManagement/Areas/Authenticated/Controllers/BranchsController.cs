@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,6 +66,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     else
                     {
                         await _unitOfWork.Branch.AddAsync(branch);
+                        await notificationTask("Branch",$"Add {branch.Name}");
                     }
                     
                 }
@@ -83,12 +86,28 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     else
                     {
                         await _unitOfWork.Branch.Update(branch);
+                        await notificationTask("Branch",$"Update {branch.Name}");
                     }
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(branch);
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -146,6 +148,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     else
                     {
                         await _unitOfWork.Product.AddAsync(productsViewModel.Product);
+                        await notificationTask("Product",$"Add {productsViewModel.Product.Id}");
                     }
                     
                 }
@@ -209,6 +212,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     else
                     {
                         await _unitOfWork.Product.Update(productsViewModel.Product);
+                        await notificationTask("Product",$"Update {productsViewModel.Product.Id}");
                     }
                 }
                 _unitOfWork.Save();
@@ -239,6 +243,21 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 productsViewModel.Quantity += productDetail.Quantity;
             }
             return View(productsViewModel);
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

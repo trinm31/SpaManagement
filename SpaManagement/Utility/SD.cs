@@ -1,3 +1,9 @@
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using SpaManagement.DataAccess.Repository.IRepository;
+using SpaManagement.Models;
+
 namespace SpaManagement.Utility
 {
     public static class SD
