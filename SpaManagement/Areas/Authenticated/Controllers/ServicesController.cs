@@ -23,7 +23,6 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
         public IActionResult Index()
         {
             ViewData["Customer"] = TempData["Customer"];
@@ -37,6 +36,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             if (id != 0)
             {
                 _customerId = id;
+                _serviceList.Clear();
             }
 
             var customer = await _unitOfWork.Customer.GetAsync(id);
@@ -124,6 +124,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     Price = _serviceList[i].Slot*_serviceList[i].Service.Price*(1-_serviceList[i].Service.Discount),
                     Slot = _serviceList[i].Slot
                 };
+                await _unitOfWork.ServiceDetail.AddAsync(serviceDetail);
+                _unitOfWork.Save();
                 if (serviceOrderSummaryViewModel.PaidAmount>= serviceDetail.Price)
                 {
                     serviceDetail.Paid = serviceDetail.Price;
@@ -135,24 +137,26 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         TransactDate = DateTime.Today,
                         Debt = serviceDetail.Debt,
                         Credit = serviceDetail.Paid,
-                        CustomerId = _customerId
+                        CustomerId = _customerId,
+                        ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
                 }
                 else
                 {
                     serviceDetail.Paid = serviceOrderSummaryViewModel.PaidAmount;
-                    serviceDetail.Debt = serviceDetail.Price - serviceDetail.Paid;
+                    serviceDetail.Debt = Math.Abs(serviceDetail.Price - serviceDetail.Paid);
                     Account account = new Account()
                     {
                         TransactDate = DateTime.Today,
                         Debt = serviceDetail.Debt,
                         Credit = serviceDetail.Paid,
-                        CustomerId = _customerId
+                        CustomerId = _customerId,
+                        ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
                 }
-                await _unitOfWork.ServiceDetail.AddAsync(serviceDetail);
+                
             }
             _unitOfWork.Save();
             _serviceList.Clear();

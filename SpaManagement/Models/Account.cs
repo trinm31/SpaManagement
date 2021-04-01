@@ -21,5 +21,8 @@ namespace SpaManagement.Models
         public int? CustomerId { get; set; }
         [ForeignKey("CustomerId")] 
         public Customer Customer { get; set; }
+        
+        public int? OrderId { get; set; }
+        public int? ServiceDetailId { get; set; }
     }
 }

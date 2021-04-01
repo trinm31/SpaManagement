@@ -83,7 +83,8 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     productDb.ImportPrice = importViewModel.Price;
                     await _unitOfWork.Product.Update(productDb);
                     var amount = importViewModel.Price * importViewModel.ProductDetails.Quantity;
-                    var debt = amount - importViewModel.PaidAmount;
+                    var debt = Math.Abs(amount - importViewModel.PaidAmount);
+                    importViewModel.Order.CustomerId = 1;
                     importViewModel.Order.PaidAmount = importViewModel.PaidAmount;
                     importViewModel.Order.Note = importViewModel.Note;
                     importViewModel.Order.Amount = amount;
@@ -107,13 +108,29 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         TransactDate = DateTime.Today,
                         Debt = debt,
                         Credit = importViewModel.PaidAmount,
+                        OrderId = importViewModel.Order.Id,
+                        CustomerId = 1
                     };
                     await _unitOfWork.Account.AddAsync(account);
                     _unitOfWork.Save();
                     ViewData["Message"] = "Success: Create Successfully";
                 }
             }
-            return View();
+            importViewModel = new ImportViewModel()
+            {
+                BranchList = branchList.Select(I => new SelectListItem
+                {
+                    Text = I.Name,
+                    Value = I.Id.ToString()
+                }),
+                ProductList = productList.Select(I => new SelectListItem
+                {
+                    Text = I.Name,
+                    Value = I.Id.ToString()
+                }),
+                ProductDetails = new ProductDetail()
+            };
+            return View(importViewModel);
         }
     }
 }
