@@ -56,6 +56,12 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             orderFrDB.PaidAmount = OrderDetailViewModel.Order.PaidAmount;
             orderFrDB.Note = OrderDetailViewModel.Order.Note;
             await _unitOfWork.Order.Update(orderFrDB);
+            var accountDb = await _unitOfWork.Account.GetFirstOrDefaultAsync(a =>
+                a.CustomerId == orderFrDB.CustomerId &&
+                a.OrderId == orderFrDB.Id);
+            accountDb.Credit = orderFrDB.PaidAmount;
+            accountDb.Debt = Math.Abs(orderFrDB.Amount - orderFrDB.PaidAmount);
+            await _unitOfWork.Account.Update(accountDb);
             _unitOfWork.Save();
             await notificationTask("OrderDetail", $"Update {orderFrDB.Id}");
             return RedirectToAction(nameof(Index));

@@ -73,6 +73,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         Text = I.Name,
                         Value = I.Id.ToString()
                     }),
+                    StaffId = serviceUser.StaffId
                 };
                 return View(serviceDetailViewModel);
             }
