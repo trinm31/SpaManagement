@@ -135,6 +135,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             soldOrderSummaryViewModel.Order.CustomerId = soldOrderSummaryViewModel.CustomerId;
             await _unitOfWork.Order.AddAsync(soldOrderSummaryViewModel.Order);
             _unitOfWork.Save();
+            await notificationTask("Sold", $"Add Order With Id {soldOrderSummaryViewModel.Order.Id}");
             foreach (var product in _productList)
             {
                 var productDetailDb = await _unitOfWork.ProductDetail.GetFirstOrDefaultAsync(
@@ -152,12 +153,12 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 soldOrderSummaryViewModel.Order.Amount +=
                     product.Count * product.Product.Price * (1-soldOrderSummaryViewModel.Discount); 
                 await _unitOfWork.OrderDetail.AddAsync(orderDetail);
+                await notificationTask("Sold", $"Add OrderDetail With Id {orderDetail}");
             }
 
             var debt = soldOrderSummaryViewModel.Order.Amount - soldOrderSummaryViewModel.PaidAmount;
             soldOrderSummaryViewModel.Order.Debt = debt;
             await _unitOfWork.Order.Update(soldOrderSummaryViewModel.Order);
-            
             Account account = new Account()
             {
                 TransactDate = DateTime.Today,
@@ -170,6 +171,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             _productList.Clear();
             _customerID = 0;
             _unitOfWork.Save();
+            await notificationTask("Sold", $"Update order with id {soldOrderSummaryViewModel.Order.Id} and Add account with id {account.Id}");
             return RedirectToAction(nameof(OrderConfirmation));
         }
         public IActionResult Plus(int cartId)
@@ -198,6 +200,21 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             var product = _productList.Find(p => p.Product.Id == cartId);
             _productList.Remove(product);
             return RedirectToAction(nameof(Summary));
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }

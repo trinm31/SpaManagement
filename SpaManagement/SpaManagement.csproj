@@ -42,6 +42,8 @@
       <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Customer.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Order.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ProductDetails\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ProductDetails\Upsert.cshtml" />
     </ItemGroup>
 
 </Project>

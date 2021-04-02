@@ -77,6 +77,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             returnViewModels.Order.Amount = returnViewModels.PaidAmount * returnViewModels.Quantity;
             await _unitOfWork.Order.AddAsync(returnViewModels.Order);
             _unitOfWork.Save();
+            await notificationTask("Return", $"Add Order With Id {returnViewModels.Order.Id}");
             OrderDetail orderDetail = new OrderDetail()
             {
                 Price = product.Price,
@@ -94,7 +95,23 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             };
             await _unitOfWork.Account.AddAsync(account);
             _unitOfWork.Save();
+            await notificationTask("Return", $"Add OrderDetail With Id {orderDetail.Id}, Account With Id {account.Id}");
             return RedirectToAction(nameof(ReturnConfirmation));
+        }
+        [NonAction]
+        private async Task notificationTask(string controller, string action = null)
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
+            string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
+            Notification notification = new Notification()
+            {
+                Date = DateTime.Today,
+                Content = Notimessage
+            };
+            await _unitOfWork.Notification.AddAsync(notification);
+            _unitOfWork.Save();
         }
     }
 }
