@@ -43,53 +43,44 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 _customerID = id;
             }
-            return View();
+
+            IEnumerable<SoldDetailViewModel> soldDetailViewModels = _productList;
+            return View(soldDetailViewModels);
         }
         public IActionResult OrderConfirmation()
         {
             return View();
         }
-        public async Task<IActionResult> Detail(int id)
+        
+        public async Task<IActionResult> AddItem(int id)
         {
             var product = await _unitOfWork.Product.GetAsync(id);
             if (product == null)
             {
-                return RedirectToAction(nameof(Product));
+                TempData["Product"] = $"Error: Product is null";
+                return RedirectToAction(nameof(Index));
             }
 
             SoldDetailViewModel soldDetailViewModel = new SoldDetailViewModel()
             {
-                Product = product
+                Product = product,
+                Count = 1
             };
-            return View(soldDetailViewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Detail(SoldDetailViewModel soldDetailViewModel)
-        {
-            
-            soldDetailViewModel.Product = await _unitOfWork.Product.GetAsync(soldDetailViewModel.Product.Id);
-            var ProductExits = _productList.FindAll(p =>p.Product.Id == soldDetailViewModel.Product.Id);
-            if (ProductExits.Any())
+            var isproductExist = _productList.FindAll(s => s.Product.Id == product.Id);
+            if (isproductExist.Any())
             {
-                var product = _productList.Find(p => p.Product.Id == soldDetailViewModel.Product.Id);
-                product.Count += soldDetailViewModel.Count;
-                _productList.Remove(product);
-                _productList.Add(product);
-                //theem message
+                var productTemp = _productList.Find(s => s.Product.Id == product.Id);
+                productTemp.Count += soldDetailViewModel.Count;
+                _productList.Remove(productTemp);
+                _productList.Add(productTemp);
+                TempData["Product"] = $"Success: Product is add more";
             }
             else
             {
                 _productList.Add(soldDetailViewModel);
-                //them message
+                TempData["Product"] = $"Success: Product is added";
             }
             return RedirectToAction(nameof(Product));
-        }
-        public async Task<IActionResult> Summary()
-        {
-            IEnumerable<SoldDetailViewModel> soldDetailViewModels = _productList;
-            return View(soldDetailViewModels);
         }
 
         [HttpPost]
@@ -178,7 +169,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         {
             var product = _productList.Find(p => p.Product.Id == cartId);
             product.Count += 1;
-            return RedirectToAction(nameof(Summary));
+            return RedirectToAction(nameof(Product));
         }
         
         public IActionResult Minus(int cartId)
@@ -192,14 +183,14 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 product.Count -= 1;
             }
-            return RedirectToAction(nameof(Summary));
+            return RedirectToAction(nameof(Product));
         }
         
         public IActionResult Remove(int cartId)
         {
             var product = _productList.Find(p => p.Product.Id == cartId);
             _productList.Remove(product);
-            return RedirectToAction(nameof(Summary));
+            return RedirectToAction(nameof(Product));
         }
         [NonAction]
         private async Task notificationTask(string controller, string action = null)

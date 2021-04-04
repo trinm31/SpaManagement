@@ -17,7 +17,7 @@ function loadDataTable(){
                 "data": "id",
                 "render": function (data){
                     return `<div class="text-center">
-                                <a href="/Authenticated/Sold/Detail/${data}" class="btn btn-success text-white" style="cursor: pointer">
+                                <a href="/Authenticated/Sold/AddItem/${data}" class="btn btn-success text-white" style="cursor: pointer">
                                     <i class="fas fa-plus"></i>
                                 </a>
                             </div>
