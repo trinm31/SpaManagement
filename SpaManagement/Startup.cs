@@ -17,6 +17,7 @@ using SpaManagement.DataAccess.DbInitialize;
 using SpaManagement.DataAccess.Repository;
 using SpaManagement.DataAccess.Repository.IRepository;
 using SpaManagement.Utility;
+using Rotativa.AspNetCore;
 
 namespace SpaManagement
 {
@@ -58,7 +59,7 @@ namespace SpaManagement
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer, Microsoft.AspNetCore.Hosting.IHostingEnvironment env1)
         {
             if (env.IsDevelopment())
             {
@@ -94,6 +95,7 @@ namespace SpaManagement
                     pattern: "{area=Authenticated}/API/{controller}/{action}/{id?}");
                 endpoints.MapRazorPages();
             });
+            RotativaConfiguration.Setup(env1);
         }
     }
 }

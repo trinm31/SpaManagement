@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
+using Rotativa.AspNetCore;
 using SpaManagement.DataAccess.Repository.IRepository;
 using SpaManagement.Models;
+using SpaManagement.ReportModel;
 using SpaManagement.Utility;
 using SpaManagement.Utility.Enum;
 using SpaManagement.ViewModels;
@@ -34,6 +36,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
 
         public IActionResult Index()
         {
+            _productList.Clear();
             return View();
         }
 
@@ -43,15 +46,10 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 _customerID = id;
             }
-
             IEnumerable<SoldDetailViewModel> soldDetailViewModels = _productList;
             return View(soldDetailViewModels);
         }
-        public IActionResult OrderConfirmation()
-        {
-            return View();
-        }
-        
+               
         public async Task<IActionResult> AddItem(int id)
         {
             var product = await _unitOfWork.Product.GetAsync(id);
@@ -159,11 +157,9 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                 OrderId = soldOrderSummaryViewModel.Order.Id
             };
             await _unitOfWork.Account.AddAsync(account);
-            _productList.Clear();
-            _customerID = 0;
             _unitOfWork.Save();
             await notificationTask("Sold", $"Update order with id {soldOrderSummaryViewModel.Order.Id} and Add account with id {account.Id}");
-            return RedirectToAction(nameof(OrderConfirmation));
+            return RedirectToAction(nameof(Invoice));
         }
         public IActionResult Plus(int cartId)
         {
@@ -206,6 +202,20 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             };
             await _unitOfWork.Notification.AddAsync(notification);
             _unitOfWork.Save();
+        }
+        [HttpGet]
+        public async Task<IActionResult> Invoice()
+        {
+            var customerDb = await _unitOfWork.Customer.GetAsync(_customerID);
+            Invoice invoice = new Invoice()
+            {
+                CustomerName = customerDb.Name,
+                IdentityCard = customerDb.IdentityCard,
+                Phone = customerDb.Phone,
+                productList = _productList,
+            };
+            _customerID = 0;
+            return new ViewAsPdf("InvoicePDF", invoice);
         }
     }
 }
