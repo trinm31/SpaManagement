@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
 using SpaManagement.DataAccess.Repository.IRepository;
 using SpaManagement.Models;
 using SpaManagement.ReportModel;
+using SpaManagement.Utility;
 using SpaManagement.Utility.Enum;
 using SpaManagement.ViewModels;
 
 namespace SpaManagement.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ImportController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -14,7 +14,7 @@ using SpaManagement.ViewModels;
 namespace SpaManagement.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
-    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
+    [Authorize(Roles =SD.Role_Staff)]
     public class ServiceUseController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -11,7 +11,7 @@ using SpaManagement.Utility;
 namespace SpaManagement.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
-    [Authorize(Roles = SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
     public class CustomersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
