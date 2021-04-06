@@ -1,0 +1,62 @@
+﻿
+@model SpaManagement.ReportModel.ServiceInvoice
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Customer</h2>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@Model.CustomerName</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.IdentityCard</h6>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.Phone</h6>
+            </div>
+        </div>
+        <p>Invoice Details</p>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Service Name</th>
+                    <th>Slot</th>
+                    <th>Price</th>
+                    <th>Discount</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var i = 1;
+                }
+                @foreach (var item in Model.servicelist)
+                {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.Service.Name</td>
+                    <td>@item.Slot</td>
+                    <td>@item.Service.Price</td>
+                    <td>@item.Service.Discount</td>
+                    @{
+                        double Total = @item.Slot * @item.Service.Price * (1 - item.Service.Discount);
+                    }
+                    <td>@Total</td>
+                </tr>
+                    i++;
+                }
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> 

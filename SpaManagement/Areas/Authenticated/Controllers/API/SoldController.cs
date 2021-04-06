@@ -21,7 +21,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers.API
         }
         public async Task<IActionResult> GetCustomer()
         {
-            var customerList = await _unitOfWork.Customer.GetAllAsync();
+            var customerList = await _unitOfWork.Customer.GetAllAsync(c => c.id != 1);
             return Json(new { data = customerList });
         }
         public async Task<IActionResult> GetProduct()

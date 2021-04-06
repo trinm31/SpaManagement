@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Rotativa.AspNetCore;
 using SpaManagement.DataAccess.Repository.IRepository;
 using SpaManagement.Models;
+using SpaManagement.ReportModel;
 using SpaManagement.Utility.Enum;
 using SpaManagement.ViewModels;
 
@@ -50,6 +52,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Import(ImportViewModel importViewModel)
         {
+            ImportInvoice importInvoice = new ImportInvoice();
             IEnumerable<Branch> branchList = await _unitOfWork.Branch.GetAllAsync();
             IEnumerable<Product> productList = await _unitOfWork.Product.GetAllAsync();
             var IsProductDetailsExited =
@@ -60,22 +63,50 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             {
                 if (IsProductDetailsExited.Any())
                 {
-                    importViewModel = new ImportViewModel()
+                    var productDetailDb =
+                    await _unitOfWork.ProductDetail
+                    .GetFirstOrDefaultAsync(i => i.BranchID == importViewModel.ProductDetails.BranchID
+                                      && i.ProductID == importViewModel.ProductDetails.ProductID);
+                    productDetailDb.Quantity += importViewModel.ProductDetails.Quantity;
+                    await _unitOfWork.ProductDetail.Update(productDetailDb);
+                    _unitOfWork.Save();
+                    var productDb = await _unitOfWork.Product.GetAsync(importViewModel.ProductDetails.ProductID);
+                    var amount = importViewModel.Price * importViewModel.ProductDetails.Quantity;
+                    var debt = Math.Abs(amount - importViewModel.PaidAmount);
+                    importViewModel.Order.CustomerId = 1;
+                    importViewModel.Order.PaidAmount = importViewModel.PaidAmount;
+                    importViewModel.Order.Note = importViewModel.Note;
+                    importViewModel.Order.Amount = amount;
+                    importViewModel.Order.Debt = debt;
+                    await _unitOfWork.Order.AddAsync(importViewModel.Order);
+                    _unitOfWork.Save();
+                    await notificationTask("Import", $"Add Order {importViewModel.Order.Id}");
+                    OrderDetail orderDetail = new OrderDetail()
                     {
-                        BranchList = branchList.Select(I => new SelectListItem
-                        {
-                            Text = I.Name,
-                            Value = I.Id.ToString()
-                        }),
-                        ProductList = productList.Select(I => new SelectListItem
-                        {
-                            Text = I.Name,
-                            Value = I.Id.ToString()
-                        }),
-                        ProductDetails = new ProductDetail()
+                        Price = importViewModel.Price,
+                        Quantity = importViewModel.ProductDetails.Quantity,
+                        ProductDetailId = productDetailDb.Id,
+                        OrderID = importViewModel.Order.Id
                     };
-                    ViewData["Message"] = "Error: Quantity for this product in this branch already exists";
-                    return View(importViewModel);
+                    await _unitOfWork.OrderDetail.AddAsync(orderDetail);
+                    await notificationTask("Import", $"Add {orderDetail.Id}");
+                    Account account = new Account()
+                    {
+                        TransactDate = DateTime.Today,
+                        Debt = debt,
+                        Credit = importViewModel.PaidAmount,
+                        OrderId = importViewModel.Order.Id,
+                        CustomerId = 1
+                    };
+                    await _unitOfWork.Account.AddAsync(account);
+                    _unitOfWork.Save();
+                    await notificationTask("Import", $"Add OrderDetail with id {orderDetail.Id}, Account with id {account.Id}");
+                    ViewData["Message"] = "Success: Create Successfully";
+                    importInvoice.Name = productDb.Name;
+                    importInvoice.Price = productDb.Price;
+                    importInvoice.Debt = debt;
+                    importInvoice.ImportPrice = importViewModel.Price;
+                    importInvoice.Quantity = importViewModel.ProductDetails.Quantity;
                 }
                 else
                 {
@@ -117,23 +148,14 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                     _unitOfWork.Save();
                     await notificationTask("Import",$"Add OrderDetail with id {orderDetail.Id}, Account with id {account.Id}");
                     ViewData["Message"] = "Success: Create Successfully";
+                    importInvoice.Name = productDb.Name;
+                    importInvoice.Price = productDb.Price;
+                    importInvoice.Debt = debt;
+                    importInvoice.ImportPrice = importViewModel.Price;
+                    importInvoice.Quantity = importViewModel.ProductDetails.Quantity;
                 }
             }
-            importViewModel = new ImportViewModel()
-            {
-                BranchList = branchList.Select(I => new SelectListItem
-                {
-                    Text = I.Name,
-                    Value = I.Id.ToString()
-                }),
-                ProductList = productList.Select(I => new SelectListItem
-                {
-                    Text = I.Name,
-                    Value = I.Id.ToString()
-                }),
-                ProductDetails = new ProductDetail()
-            };
-            return View(importViewModel);
+            return RedirectToAction("Invoice",importInvoice);
         }
         [NonAction]
         private async Task notificationTask(string controller, string action = null)
@@ -149,6 +171,11 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             };
             await _unitOfWork.Notification.AddAsync(notification);
             _unitOfWork.Save();
+        }
+        [HttpGet]
+        public async Task<IActionResult> Invoice(ImportInvoice importInvoice)
+        {
+            return new ViewAsPdf("Invoice", importInvoice);
         }
     }
 }

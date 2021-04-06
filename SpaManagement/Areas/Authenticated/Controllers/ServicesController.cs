@@ -5,8 +5,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rotativa.AspNetCore;
 using SpaManagement.DataAccess.Repository.IRepository;
 using SpaManagement.Models;
+using SpaManagement.ReportModel;
 using SpaManagement.Utility;
 using SpaManagement.ViewModels;
 
@@ -74,11 +76,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-        
-        public IActionResult OrderConfirmation()
-        {
-            return View();
-        }
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Summary")]
@@ -142,6 +140,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
+                    await _unitOfWork.ServiceDetail.Update(serviceDetail);
                     await notificationTask("Service", $"Add Account with Id {account.Id}");
                 }
                 else
@@ -157,14 +156,13 @@ namespace SpaManagement.Areas.Authenticated.Controllers
                         ServiceDetailId = serviceDetail.Id
                     };
                     await _unitOfWork.Account.AddAsync(account);
+                    await _unitOfWork.ServiceDetail.Update(serviceDetail);
                     await notificationTask("Service", $"Add Account with Id {account.Id}");
                 }
                 
             }
             _unitOfWork.Save();
-            _serviceList.Clear();
-            _customerId = 0;
-            return RedirectToAction(nameof(OrderConfirmation));
+            return RedirectToAction(nameof(Invoice));
         }
         public IActionResult Plus(int cartId)
         {
@@ -196,7 +194,7 @@ namespace SpaManagement.Areas.Authenticated.Controllers
         [NonAction]
         private async Task notificationTask(string controller, string action = null)
         {
-            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var userDb = await _unitOfWork.ApplicationUser.GetAsync(claims.Value);
             string Notimessage = $"User {userDb.Name} delete {controller} for {action}";
@@ -207,6 +205,20 @@ namespace SpaManagement.Areas.Authenticated.Controllers
             };
             await _unitOfWork.Notification.AddAsync(notification);
             _unitOfWork.Save();
+        }
+        [HttpGet] 
+        public async Task<IActionResult> Invoice()
+        {
+            var customerDb = await _unitOfWork.Customer.GetAsync(_customerId);
+            ServiceInvoice invoice = new ServiceInvoice()
+            {
+                CustomerName = customerDb.Name,
+                IdentityCard = customerDb.IdentityCard,
+                Phone = customerDb.Phone,
+                servicelist = _serviceList,
+            };
+            _customerId = 0;
+            return new ViewAsPdf("InvoicePDF", invoice);
         }
     }
 }
