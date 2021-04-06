@@ -1,6 +1,7 @@
 ﻿@using static SpaManagement.wwwroot.helpers.NavigationIndicatorHelper;
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
+@using SpaManagement.Utility
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,12 +45,6 @@
         <li class="nav-item">
           <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="index3.html" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Contact</a>
-        </li>
       </ul>
       
       <ul class="navbar-nav ml-auto">
@@ -85,90 +80,144 @@
         <partial name="_LoginPartial"/>
       <!-- Sidebar Menu -->
         <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <!-- Add icons to the links using the .nav-icon class
-                 with font-awesome or any other icon font library -->
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("home","index")" asp-area="Unauthenticated" asp-controller="Home" asp-action="Index">
-                <i class="nav-icon fas fa-home"></i>
-                <p>
-                  Home
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Users","Index")" asp-area="Authenticated" asp-controller="Users" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Users Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Branchs","Index")" asp-area="Authenticated" asp-controller="Branchs" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Branch Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("CategoryServices","Index")" asp-area="Authenticated" asp-controller="CategoryServices" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Category Service Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Customers","Index")" asp-area="Authenticated" asp-controller="Customers" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Customers Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Manufacturers","Index")" asp-area="Authenticated" asp-controller="Manufacturers" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Manufacturers Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Products","Index")" asp-area="Authenticated" asp-controller="Products" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Products Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Suppliers","Index")" asp-area="Authenticated" asp-controller="Suppliers" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Suppliers Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("TypeOfProducts","Index")" asp-area="Authenticated" asp-controller="TypeOfProducts" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Type Of Product Managerment
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link @Url.MakeActiveClass("Services","Index")" asp-area="Authenticated" asp-controller="Services" asp-action="Index">
-                <i class="nav-icon fas fa-user"></i>
-                <p>
-                  Service Order
-                </p>
-              </a>
-            </li>
-          </ul>
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+    with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a class="nav-link @Url.MakeActiveClass("home","index")" asp-area="Unauthenticated" asp-controller="Home" asp-action="Index">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>
+                            Home
+                        </p>
+                    </a>
+                </li>
+                @if (User.IsInRole(SD.Role_Admin))
+                {
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-tasks"></i>
+                            <p>
+                                Management
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("Branchs","Index")" asp-area="Authenticated" asp-controller="Branchs" asp-action="Index">
+                                    <p>
+                                        Branch
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("Users","Index")" asp-area="Authenticated" asp-controller="Users" asp-action="Index">
+                                    <p>
+                                        Users
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("CategoryServices","Index")" asp-area="Authenticated" asp-controller="CategoryServices" asp-action="Index">
+                                    <p>
+                                        Category Service
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("Manufacturers","Index")" asp-area="Authenticated" asp-controller="Manufacturers" asp-action="Index">
+                                    <p>
+                                        Manufacturers
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("Suppliers","Index")" asp-area="Authenticated" asp-controller="Suppliers" asp-action="Index">
+                                    <p>
+                                        Suppliers
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("TypeOfProducts","Index")" asp-area="Authenticated" asp-controller="TypeOfProducts" asp-action="Index">
+                                    <p>
+                                        Type Of Product
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("Products","Index")" asp-area="Authenticated" asp-controller="Products" asp-action="Index">
+                                    <p>
+                                        Products
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("OrderDetail","Index")" asp-area="Authenticated" asp-controller="OrderDetail" asp-action="Index">
+                                    <p>
+                                        Order
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("ServiceDetail","Index")" asp-area="Authenticated" asp-controller="ServiceDetail" asp-action="Index">
+                                    <p>
+                                        Service Detail
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @Url.MakeActiveClass("Notifications","Index")" asp-area="Authenticated" asp-controller="Notifications" asp-action="Index">
+                                    <p>
+                                        Notification
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Url.MakeActiveClass("Import","Import")" asp-area="Authenticated" asp-controller="Import" asp-action="Import">
+                            <i class="nav-icon fas fa-file-import"></i>
+                            <p>
+                                Import Product
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (User.IsInRole(SD.Role_Staff))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @Url.MakeActiveClass("Customers", "Index")" asp-area="Authenticated" asp-controller="Customers" asp-action="Index">
+                            <i class="nav-icon fas fa-user"></i>
+                            <p>
+                                Customers
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Url.MakeActiveClass("Services", "Index")" asp-area="Authenticated" asp-controller="Services" asp-action="Index">
+                            <i class="nav-icon fas fa-concierge-bell"></i>
+                            <p>
+                                Service Order
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Url.MakeActiveClass("ServiceUse", "Index")" asp-area="Authenticated" asp-controller="ServiceUse" asp-action="Index">
+                            <i class="nav-icon fas fa-concierge-bell"></i>
+                            <p>
+                                Service Use
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @Url.MakeActiveClass("Sold", "Index")" asp-area="Authenticated" asp-controller="Sold" asp-action="Index">
+                            <i class="nav-icon fas fa-shopping-cart"></i>
+                            <p>
+                                Sold / Return Product
+                            </p>
+                        </a>
+                    </li>
+                }
+            </ul>
         </nav>
         <!-- /.sidebar-menu -->
       </div>
