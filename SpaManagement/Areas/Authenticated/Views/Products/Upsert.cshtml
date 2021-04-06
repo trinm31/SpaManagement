@@ -1,0 +1,109 @@
+@using Microsoft.AspNetCore.Routing
+@model SpaManagement.ViewModels.ProductsViewModel
+
+@{
+    var title = "Create Product";
+    Layout = "_Layout";
+}
+<form method="post">
+    <div class="row p-3 border bg-white">
+        @if (Model.Product.Id != 0)
+        {
+            <input type="hidden" asp-for="Product.Id">
+            title = "Edit Product";
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <partial name="_StatusMessage" model="@ViewData["Message"]" />
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.Name"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.Name" class="form-control">
+                    <span asp-validation-for="Product.Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.Price"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.Price" class="form-control">
+                    <span asp-validation-for="Product.Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label> Quantity</label>
+                </div>
+                <div class="col-8">
+                    <input class="form-control" value="@Model.Quantity" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.Description"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.Description" class="form-control">
+                    <span asp-validation-for="Product.Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.BarcodeId"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Product.BarcodeId" class="form-control">
+                    <span asp-validation-for="Product.BarcodeId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.SupplierID"></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.SupplierID, Model.Suppliers, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="Product.SupplierID" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.ManufacturerID"></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.ManufacturerID, Model.Manufacturers, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="Product.ManufacturerID" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Product.TypeID"></label>
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Product.TypeID, Model.TypeOfProducts, "-Select a Category", new {@class = "form-control"})
+                    <span asp-validation-for="Product.TypeID" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Product.Id != 0)
+                    {
+                        <partial name="_EditAndBackToListButton" model="@Model.Product.Id"/>
+                    }
+                    else
+                    {
+                        <partial name="_CreateAndBackToListButton"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

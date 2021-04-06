@@ -23,12 +23,33 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.10" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.10" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+        <PackageReference Include="Rotativa.AspNetCore" Version="1.1.1" />
         <PackageReference Include="SendGrid" Version="9.22.0" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Areas\Unauthenticated\Views" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="wwwroot\helpers\Helper.cs" />
+      <Compile Include="wwwroot\helpers\NavigationIndicatorHelper.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ServiceUsers\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ServiceUsers\Upsert.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Customer.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\Orders\Order.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ProductDetails\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Authenticated\Views\ProductDetails\Upsert.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\Rotativa\wkhtmltoimage.exe" />
+      <None Include="wwwroot\Rotativa\wkhtmltopdf.exe" />
     </ItemGroup>
 
 </Project>

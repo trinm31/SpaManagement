@@ -1,0 +1,60 @@
+﻿
+@model SpaManagement.ReportModel.Invoice
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Customer</h2>
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@Model.CustomerName</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.IdentityCard</h6>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.Phone</h6>
+            </div>
+        </div>
+        <p>Invoice Details</p>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var i = 1;
+                }
+                @foreach (var item in Model.productList)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.Product.Name</td>
+                        <td>@item.Count</td>
+                        <td>@item.Product.Price</td>
+                        @{
+                            double Total = @item.Count * @item.Product.Price;
+                         }
+                        <td>@Total</td>
+                    </tr>
+                    i++;
+                }
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> 

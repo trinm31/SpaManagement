@@ -11,9 +11,6 @@ namespace SpaManagement.Models
         public double Price { get; set; }
         [Required]
         public int Quantity { get; set; }
-        [Required]
-        public double Amount { get; set; }
-        [Required]
         public double Discount { get; set; }
         [Required]
         public int OrderID { get; set; }
@@ -23,5 +20,7 @@ namespace SpaManagement.Models
         public int ProductDetailId { get; set; }
         [ForeignKey("ProductDetailId")]
         public ProductDetail ProductDetail { get; set; }
+        [NotMapped]
+        public string Name { get; set; }
     }
 }

@@ -15,11 +15,14 @@ namespace SpaManagement.Models
         [Required] 
         public double Credit { get; set; }
         [Required] 
-        public double Balance { get; set; }
-        public string Description { get; set; }
+        public double BalanceDebt { get; set; }
         [Required] 
-        public int CustomerId { get; set; }
+        public double BalanceCredit { get; set; }
+        public int? CustomerId { get; set; }
         [ForeignKey("CustomerId")] 
         public Customer Customer { get; set; }
+        
+        public int? OrderId { get; set; }
+        public int? ServiceDetailId { get; set; }
     }
 }

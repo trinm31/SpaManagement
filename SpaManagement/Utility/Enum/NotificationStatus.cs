@@ -2,7 +2,7 @@ namespace SpaManagement.Utility.Enum
 {
     public enum NotificationStatus
     {
-        Seen,
-        Unseen
+        Seen = 1,
+        Unseen = 0
     }
 }

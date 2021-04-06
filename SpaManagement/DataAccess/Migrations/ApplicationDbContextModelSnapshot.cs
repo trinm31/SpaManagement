@@ -228,20 +228,26 @@ namespace SpaManagement.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Balance")
+                    b.Property<double>("BalanceCredit")
+                        .HasColumnType("float");
+
+                    b.Property<double>("BalanceDebt")
                         .HasColumnType("float");
 
                     b.Property<double>("Credit")
                         .HasColumnType("float");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<double>("Debt")
                         .HasColumnType("float");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ServiceDetailId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("TransactDate")
                         .HasColumnType("datetime2");
@@ -312,9 +318,6 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<string>("ServiceCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UseTime")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -415,15 +418,11 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<double>("Debt")
                         .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -450,9 +449,6 @@ namespace SpaManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
 
                     b.Property<double>("Discount")
                         .HasColumnType("float");
@@ -506,9 +502,6 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
                     b.Property<int>("SupplierID")
                         .HasColumnType("int");
 
@@ -561,11 +554,14 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Discount")
+                    b.Property<double>("Debt")
                         .HasColumnType("float");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<double>("Paid")
+                        .HasColumnType("float");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -573,10 +569,7 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Slottime")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UseTime")
+                    b.Property<int>("Slot")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -601,14 +594,8 @@ namespace SpaManagement.DataAccess.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Paid")
-                        .HasColumnType("float");
-
                     b.Property<DateTime>("ServedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ServiceDetailId")
-                        .HasColumnType("int");
 
                     b.Property<string>("StaffId")
                         .IsRequired()
@@ -619,11 +606,34 @@ namespace SpaManagement.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServiceDetailId");
-
                     b.HasIndex("StaffId");
 
                     b.ToTable("ServiceUsers");
+                });
+
+            modelBuilder.Entity("SpaManagement.Models.Slot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Paid")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ServiceDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceDetailId");
+
+                    b.HasIndex("ServiceUserId");
+
+                    b.ToTable("Slots");
                 });
 
             modelBuilder.Entity("SpaManagement.Models.Supplier", b =>
@@ -752,18 +762,14 @@ namespace SpaManagement.DataAccess.Migrations
                 {
                     b.HasOne("SpaManagement.Models.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
                 });
 
             modelBuilder.Entity("SpaManagement.Models.Order", b =>
                 {
                     b.HasOne("SpaManagement.Models.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
                 });
 
             modelBuilder.Entity("SpaManagement.Models.OrderDetail", b =>
@@ -834,15 +840,24 @@ namespace SpaManagement.DataAccess.Migrations
 
             modelBuilder.Entity("SpaManagement.Models.ServiceUsers", b =>
                 {
+                    b.HasOne("SpaManagement.Models.StaffUser", "StaffUser")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SpaManagement.Models.Slot", b =>
+                {
                     b.HasOne("SpaManagement.Models.ServiceDetail", "ServiceDetail")
                         .WithMany()
                         .HasForeignKey("ServiceDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SpaManagement.Models.StaffUser", "StaffUser")
+                    b.HasOne("SpaManagement.Models.ServiceUsers", "ServiceUsers")
                         .WithMany()
-                        .HasForeignKey("StaffId")
+                        .HasForeignKey("ServiceUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

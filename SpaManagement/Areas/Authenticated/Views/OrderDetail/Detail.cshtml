@@ -1,0 +1,126 @@
+@using SpaManagement.Utility.Enum
+@model SpaManagement.ViewModels.OrderDetailViewModel
+<form method="post">
+    <input hidden asp-for="Order.Id" />
+    <br />
+    <div class="backgroundWhite container">
+        <div class="card">
+            <div class="card-header bg-dark text-light ml-0 row container">
+                <div class="col-12 d-none d-md-block col-md-6 pb-1">
+                    <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary
+                </div>
+                <div class="col-12 col-md-4 offset-md-2 text-right">
+                    <a asp-area="Authenticated" asp-controller="OrderDetail" asp-action="Index" class="btn btn-outline-info form-control btn-sm">Back to order List</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container rounded p-2">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 pb-4">
+                            <div class="row">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-primary">Order Details</span>
+                                </h4>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Name</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.Customer.Name" type="text" class="form-control" readonly/>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Phone</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.Customer.Phone" type="text" class="form-control" readonly/>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Identity Card</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.Customer.IdentityCard" type="text" class="form-control" readonly/>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Date of Birth</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.Customer.DateOfBirth" type="text" class="form-control" readonly/>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Amount</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.Amount" type="text" class="form-control" />
+                                    <span asp-validation-for="Order.Amount" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Paid Amount</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.PaidAmount" type="text" class="form-control" />
+                                    <span asp-validation-for="Order.PaidAmount" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">OrderType</div>
+                                <div class="col-9">
+                                    <select asp-for="Order.OrderType" asp-items="Html.GetEnumSelectList<OrderType>()" class="form-control">
+                                        <option selected="selected" value="">Please select</option>
+                                    </select>
+                                    <span asp-validation-for="Order.OrderType" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Note</div>
+                                <div class="col-9">
+                                    <input asp-for="Order.Note" type="text" class="form-control" />
+                                    <span asp-validation-for="Order.Note" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <input type="submit" value="Update Order Details" class="btn btn-warning form-control"
+                                                                       formaction="/Authenticated/OrderDetail/UpdateInfo" formmethod="post" />
+                        </div>
+                        <div class="col-12 col-lg-5 offset-lg-1">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Order Summary</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                @foreach (var details in Model.OrderDetails)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between p-2">
+                                        <div class="row container">
+                                            <div class="col-8">
+                                                <input type="hidden" asp-for="@details.Id" />
+                                                <h6 class="my-0 text-primary">@details.ProductDetail.Product.Name</h6>
+                                                <small class="text-muted">Price : @details.Price</small><br />
+                                                <small class="text-muted">Quantity : @details.Quantity</small><br />
+                                                <small class="text-muted">Discount : @details.Discount</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <p class="text-success">@(String.Format("{0:C}", details.Quantity * details.Price))</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="list-group-item bg-info">
+                                    <div class="row container">
+                                        <div class="col-6">
+                                            <h5 class="text-white">TOTAL </h5>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <h5 class="text-white">@(String.Format("{0:C}", Model.Order.Amount))</h5>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

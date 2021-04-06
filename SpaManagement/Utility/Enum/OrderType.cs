@@ -2,9 +2,8 @@ namespace SpaManagement.Utility.Enum
 {
     public enum OrderType
     {
-        PreOrder,
-        NormalOrder,
-        Deposit
-        
+        Import = 1,
+        Sold = 2,
+        Returns = 3
     }
 }
